@@ -13,11 +13,11 @@
             <h1 class="text-[28px] font-medium text-[#2a1d17]">Dashboard</h1>
             <p class="text-[15px] text-[#65564c] mt-1">Ringkasan aspirasi masuk dan progres penanganan DPM FDIK.</p>
         </div>
-        <div class="flex items-center gap-3">
-            <a href="{{ route('admin.reports.index', ['status' => 'menunggu']) }}" class="s-btn-secondary">
+        <div class="flex flex-wrap items-center gap-3">
+            <a href="{{ route('admin.reports.index', ['status' => 'menunggu']) }}" class="s-btn-secondary whitespace-nowrap">
                 Antrean verifikasi ({{ $stats['menunggu'] }})
             </a>
-            <a href="{{ route('admin.reports.export') }}" class="s-btn-primary">
+            <a href="{{ route('admin.reports.export') }}" class="s-btn-primary whitespace-nowrap">
                 Export CSV
             </a>
         </div>

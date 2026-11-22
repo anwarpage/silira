@@ -69,10 +69,11 @@
             <a href="{{ route('admin.dashboard') }}">
                 <x-brand-logo size="sm" />
             </a>
-            <div class="flex items-center gap-4 text-[14px] font-medium">
+            <div class="flex items-center gap-3.5 text-[14px] font-medium">
                 <a href="{{ route('admin.dashboard') }}">Dashboard</a>
                 <a href="{{ route('admin.reports.index') }}">Laporan</a>
                 <a href="{{ route('admin.categories.index') }}">Kategori</a>
+                <a href="{{ route('admin.users.index') }}">Akun</a>
                 <form action="{{ route('admin.logout') }}" method="POST" class="inline">
                     @csrf
                     <button type="submit" class="text-[#7a2824]">Keluar</button>
