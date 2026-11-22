@@ -3,20 +3,20 @@
 @section('title', 'Kategori bidang — Silira')
 
 @section('content')
-    <h1 class="text-[28px] font-medium text-[#2a1d17]">Kategori bidang</h1>
-    <p class="text-[15px] text-[#65564c] mt-1">Kelola pilihan bidang tujuan pada formulir pelaporan.</p>
+    <h1 class="text-[28px] font-medium text-[#0f172a]">Kategori bidang</h1>
+    <p class="text-[15px] text-[#475569] mt-1">Kelola pilihan bidang tujuan pada formulir pelaporan.</p>
 
     <div class="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div class="lg:col-span-4 s-card p-6 h-fit">
-            <h2 class="text-[16px] font-medium text-[#2a1d17]">Tambah kategori</h2>
+            <h2 class="text-[16px] font-medium text-[#0f172a]">Tambah kategori</h2>
             <form action="{{ route('admin.categories.store') }}" method="POST" class="mt-4 space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-[13px] font-medium text-[#65564c] mb-1.5">Nama kategori</label>
+                    <label class="block text-[13px] font-medium text-[#475569] mb-1.5">Nama kategori</label>
                     <input type="text" name="name" required placeholder="Contoh: Perpustakaan & Lab" class="s-input">
                 </div>
                 <div>
-                    <label class="block text-[13px] font-medium text-[#65564c] mb-1.5">Deskripsi singkat</label>
+                    <label class="block text-[13px] font-medium text-[#475569] mb-1.5">Deskripsi singkat</label>
                     <input type="text" name="description" placeholder="Keterangan ruang lingkup..." class="s-input">
                 </div>
                 <button type="submit" class="s-btn-primary w-full">Tambah kategori</button>
@@ -25,7 +25,7 @@
 
         <div class="lg:col-span-8 s-card overflow-hidden">
             <table class="w-full text-left text-[14px]">
-                <thead class="bg-[#e5e1d8]/60 text-[13px] font-medium text-[#65564c] border-b border-[#2a1d17]/12">
+                <thead class="bg-[#f5f7fa]/60 text-[13px] font-medium text-[#475569] border-b border-[#0f172a]/12">
                     <tr>
                         <th class="px-5 py-3">Kategori</th>
                         <th class="px-5 py-3 text-center">Laporan</th>
@@ -33,16 +33,16 @@
                         <th class="px-5 py-3 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-[#2a1d17]/10">
+                <tbody class="divide-y divide-[#0f172a]/10">
                     @foreach ($categories as $cat)
                         <tr>
                             <td class="px-5 py-3.5">
-                                <p class="font-medium text-[#2a1d17]">{{ $cat->name }}</p>
-                                <p class="text-[13px] text-[#65564c]">{{ $cat->description ?? '-' }}</p>
+                                <p class="font-medium text-[#0f172a]">{{ $cat->name }}</p>
+                                <p class="text-[13px] text-[#475569]">{{ $cat->description ?? '-' }}</p>
                             </td>
-                            <td class="px-5 py-3.5 text-center font-mono text-[#2a1d17]">{{ $cat->reports_count }}</td>
+                            <td class="px-5 py-3.5 text-center font-mono text-[#0f172a]">{{ $cat->reports_count }}</td>
                             <td class="px-5 py-3.5 text-center">
-                                <span class="px-2.5 py-0.5 rounded-[6px] text-[13px] font-medium {{ $cat->is_active ? 'bg-[#d9e7d6] text-[#284b20]' : 'bg-[#dad5ca] text-[#65564c]' }}">
+                                <span class="px-2.5 py-0.5 rounded-[6px] text-[13px] font-medium {{ $cat->is_active ? 'bg-[#eff4ff] text-[#1e3a8a]' : 'bg-[#eceff4] text-[#475569]' }}">
                                     {{ $cat->is_active ? 'Aktif' : 'Nonaktif' }}
                                 </span>
                             </td>
@@ -60,7 +60,7 @@
                                 <form action="{{ route('admin.categories.destroy', $cat) }}" method="POST" onsubmit="return confirm('Hapus kategori ini?')" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="px-2.5 py-1.5 rounded-[6px] text-[13px] font-medium text-[#7a2824] hover:bg-[#eedcdb] cursor-pointer">Hapus</button>
+                                    <button type="submit" class="px-2.5 py-1.5 rounded-[6px] text-[13px] font-medium text-[#991b1b] hover:bg-[#fee2e2] cursor-pointer">Hapus</button>
                                 </form>
                             </td>
                         </tr>

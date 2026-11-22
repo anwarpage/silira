@@ -5,11 +5,11 @@
 @section('content')
     @php
         $statusDots = [
-            'menunggu' => 'bg-[#b78328]',
-            'diverifikasi' => 'bg-[#1e4b63]',
-            'diproses' => 'bg-[#3a3469]',
-            'selesai' => 'bg-[#456f3a]',
-            'ditolak' => 'bg-[#9b3a34]',
+            'menunggu' => 'bg-[#d97706]',
+            'diverifikasi' => 'bg-[#0284c7]',
+            'diproses' => 'bg-[#1e3a8a]',
+            'selesai' => 'bg-[#1e3a8a]',
+            'ditolak' => 'bg-[#dc2626]',
         ];
         $statusOptions = collect([['value' => '', 'label' => 'Semua status']])
             ->merge(collect(\App\Models\Report::STATUSES)->map(fn ($label, $key) => [
@@ -33,8 +33,8 @@
 
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-            <h1 class="text-[28px] font-medium text-[#2a1d17]">Laporan masuk</h1>
-            <p class="text-[15px] text-[#65564c] mt-1">Kelola, filter, tindak lanjuti, atau ekspor laporan mahasiswa.</p>
+            <h1 class="text-[28px] font-medium text-[#0f172a]">Laporan masuk</h1>
+            <p class="text-[15px] text-[#475569] mt-1">Kelola, filter, tindak lanjuti, atau ekspor laporan mahasiswa.</p>
         </div>
         <a href="{{ route('admin.reports.export', request()->query()) }}" class="s-btn-primary">
             Export filter aktif (CSV)
@@ -65,7 +65,7 @@
     <div class="mt-6 s-card overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-[14px]">
-                <thead class="bg-[#e5e1d8]/60 text-[13px] font-medium text-[#65564c] border-b border-[#2a1d17]/12">
+                <thead class="bg-[#f5f7fa]/60 text-[13px] font-medium text-[#475569] border-b border-[#0f172a]/12">
                     <tr>
                         <th class="px-5 py-3">Tiket &amp; waktu</th>
                         <th class="px-5 py-3">Laporan</th>
@@ -74,20 +74,20 @@
                         <th class="px-5 py-3 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-[#2a1d17]/10">
+                <tbody class="divide-y divide-[#0f172a]/10">
                     @forelse ($reports as $report)
-                        <tr class="hover:bg-[#e5e1d8]/40 transition">
+                        <tr class="hover:bg-[#f5f7fa]/40 transition">
                             <td class="px-5 py-4 whitespace-nowrap">
-                                <span class="font-mono text-[13px] font-medium text-[#2a1d17] block">{{ $report->ticket_code }}</span>
-                                <span class="text-[13px] text-[#65564c]">{{ $report->created_at->format('d M Y, H:i') }}</span>
+                                <span class="font-mono text-[13px] font-medium text-[#0f172a] block">{{ $report->ticket_code }}</span>
+                                <span class="text-[13px] text-[#475569]">{{ $report->created_at->format('d M Y, H:i') }}</span>
                             </td>
                             <td class="px-5 py-4 max-w-md">
-                                <p class="font-medium text-[#2a1d17] line-clamp-1">{{ $report->judul_laporan }}</p>
-                                <p class="text-[13px] text-[#65564c]">{{ $report->jenis_laporan }} &middot; {{ $report->privacy_label }} @if ($report->category) &middot; {{ $report->category->name }} @endif</p>
+                                <p class="font-medium text-[#0f172a] line-clamp-1">{{ $report->judul_laporan }}</p>
+                                <p class="text-[13px] text-[#475569]">{{ $report->jenis_laporan }} &middot; {{ $report->privacy_label }} @if ($report->category) &middot; {{ $report->category->name }} @endif</p>
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap">
-                                <p class="text-[#2a1d17]">{{ $report->nama_pelapor }}</p>
-                                <p class="font-mono text-[13px] text-[#65564c]">{{ $report->nim_nip }}</p>
+                                <p class="text-[#0f172a]">{{ $report->nama_pelapor }}</p>
+                                <p class="font-mono text-[13px] text-[#475569]">{{ $report->nim_nip }}</p>
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap">
                                 <span class="px-2.5 py-0.5 rounded-[6px] text-[13px] font-medium {{ $report->status_badge_class }}">{{ $report->status_label }}</span>
@@ -99,14 +99,14 @@
                                     <form action="{{ route('admin.reports.destroy', $report) }}" method="POST" onsubmit="return confirm('Hapus laporan {{ $report->ticket_code }} secara permanen?')" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="px-2.5 py-1.5 rounded-[6px] text-[13px] font-medium text-[#7a2824] hover:bg-[#eedcdb] cursor-pointer">Hapus</button>
+                                        <button type="submit" class="px-2.5 py-1.5 rounded-[6px] text-[13px] font-medium text-[#991b1b] hover:bg-[#fee2e2] cursor-pointer">Hapus</button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-[#65564c]">Tidak ada laporan yang ditemukan.</td>
+                            <td colspan="5" class="px-6 py-12 text-center text-[#475569]">Tidak ada laporan yang ditemukan.</td>
                         </tr>
                     @endforelse
                 </tbody>

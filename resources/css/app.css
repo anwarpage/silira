@@ -4,20 +4,21 @@
 @source '../../storage/framework/views/*.php';
 
 :root {
-    --p-bg: #e5e1d8;
-    --p-surface: #dad5ca;
-    --p-card: #f6f4ef;
-    --p-ink: #2a1d17;
-    --p-muted: #65564c;
-    --p-line: rgba(42, 29, 23, 0.13);
-    --p-line-strong: rgba(42, 29, 23, 0.24);
-    --p-accent: #456f3a;
-    --p-accent-hover: #385c2f;
+    --p-bg: #f5f7fa;
+    --p-surface: #eceff4;
+    --p-card: #ffffff;
+    --p-ink: #0f172a;
+    --p-muted: #475569;
+    --p-line: rgba(15, 23, 42, 0.10);
+    --p-line-strong: rgba(15, 23, 42, 0.20);
+    --p-accent: #1e3a8a;
+    --p-accent-hover: #172554;
     --p-accent-ink: #ffffff;
-    --p-inv-bg: #2a1d17;
-    --p-inv-surface: #352822;
-    --p-inv-ink: #e5e1d8;
-    --p-inv-muted: #a89f96;
+    --p-gold: #b45309;
+    --p-inv-bg: #0f172a;
+    --p-inv-surface: #1e293b;
+    --p-inv-ink: #f8fafc;
+    --p-inv-muted: #94a3b8;
 }
 
 @theme {
@@ -50,7 +51,7 @@
 .s-card {
     background-color: var(--p-card);
     border: 1px solid var(--p-line);
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
 .s-btn-primary {
@@ -86,7 +87,7 @@
     height: 44px;
     padding: 0 20px;
     border-radius: 8px;
-    background-color: transparent;
+    background-color: #ffffff;
     border: 1px solid var(--p-line-strong);
     color: var(--p-ink);
     font-size: 15px;
@@ -96,7 +97,7 @@
 }
 
 .s-btn-secondary:hover {
-    background-color: rgba(42, 29, 23, 0.05);
+    background-color: #f8fafc;
     border-color: var(--p-ink);
     transform: translateY(-1px);
 }
@@ -120,11 +121,11 @@
 .s-input:focus {
     outline: none;
     border-color: var(--p-accent);
-    box-shadow: 0 0 0 3px rgba(69, 111, 58, 0.16);
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.14);
 }
 
 .s-input::placeholder {
-    color: #93867c;
+    color: #94a3b8;
 }
 
 .s-input-sm {

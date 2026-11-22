@@ -53,8 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 input.value = value;
                 labelEl.textContent = label;
-                labelEl.classList.remove('text-[#93867c]');
-                labelEl.classList.add('text-[#2a1d17]', 'font-medium');
+                labelEl.classList.remove('text-[#94a3b8]');
+                labelEl.classList.add('text-[#0f172a]', 'font-medium');
 
                 if (dotEl) {
                     dotEl.className = dot
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 options.forEach((o) => {
                     const active = o === opt;
                     o.setAttribute('aria-selected', active ? 'true' : 'false');
-                    o.classList.toggle('bg-[#e5e1d8]', active);
+                    o.classList.toggle('bg-[#eff4ff]', active);
                     const check = o.querySelector('[data-option-check]');
                     check?.classList.toggle('opacity-0', !active);
                 });
@@ -102,26 +102,26 @@ document.addEventListener('DOMContentLoaded', () => {
             if (file) {
                 const mb = (file.size / (1024 * 1024)).toFixed(2);
                 fileLabel.textContent = `${file.name} (${mb} MB)`;
-                fileLabel.classList.remove('text-[#65564c]');
-                fileLabel.classList.add('text-[#2a1d17]', 'font-medium');
+                fileLabel.classList.remove('text-[#475569]');
+                fileLabel.classList.add('text-[#0f172a]', 'font-medium');
             } else {
                 fileLabel.textContent = 'Klik atau tarik file ke sini (JPG, PNG, WEBP, PDF maks. 5 MB)';
-                fileLabel.classList.add('text-[#65564c]');
-                fileLabel.classList.remove('text-[#2a1d17]', 'font-medium');
+                fileLabel.classList.add('text-[#475569]');
+                fileLabel.classList.remove('text-[#0f172a]', 'font-medium');
             }
         };
 
         fileInput.addEventListener('change', updateName);
         zone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            zone.classList.add('border-[#456f3a]', 'bg-[#456f3a]/5');
+            zone.classList.add('border-[#1e3a8a]', 'bg-[#1e3a8a]/5');
         });
         zone.addEventListener('dragleave', () => {
-            zone.classList.remove('border-[#456f3a]', 'bg-[#456f3a]/5');
+            zone.classList.remove('border-[#1e3a8a]', 'bg-[#1e3a8a]/5');
         });
         zone.addEventListener('drop', (e) => {
             e.preventDefault();
-            zone.classList.remove('border-[#456f3a]', 'bg-[#456f3a]/5');
+            zone.classList.remove('border-[#1e3a8a]', 'bg-[#1e3a8a]/5');
             if (e.dataTransfer?.files?.length) {
                 fileInput.files = e.dataTransfer.files;
                 updateName();

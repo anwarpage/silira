@@ -13,11 +13,11 @@
             ->all();
 
         $statusDots = [
-            'menunggu' => 'bg-[#b78328]',
-            'diverifikasi' => 'bg-[#1e4b63]',
-            'diproses' => 'bg-[#3a3469]',
-            'selesai' => 'bg-[#456f3a]',
-            'ditolak' => 'bg-[#9b3a34]',
+            'menunggu' => 'bg-[#d97706]',
+            'diverifikasi' => 'bg-[#0284c7]',
+            'diproses' => 'bg-[#1e3a8a]',
+            'selesai' => 'bg-[#1e3a8a]',
+            'ditolak' => 'bg-[#dc2626]',
         ];
         $statusOptions = collect([['value' => '', 'label' => 'Semua status']])
             ->merge(collect(\App\Models\Report::STATUSES)->map(fn ($label, $key) => [
@@ -31,8 +31,8 @@
     <div class="max-w-[1200px] mx-auto px-6 sm:px-10 py-12">
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-                <h1 class="text-[32px] font-medium leading-tight text-[#2a1d17]">Aspirasi publik</h1>
-                <p class="mt-1.5 text-[15px] text-[#65564c]">Menampilkan laporan Publik dan Anonim. Laporan Rahasia tidak dipublikasikan.</p>
+                <h1 class="text-[32px] font-medium leading-tight text-[#0f172a]">Aspirasi publik</h1>
+                <p class="mt-1.5 text-[15px] text-[#475569]">Menampilkan laporan Publik dan Anonim. Laporan Rahasia tidak dipublikasikan.</p>
             </div>
             <a href="{{ route('reports.create') }}" class="s-btn-primary">
                 Kirim aspirasi
@@ -60,31 +60,31 @@
             </div>
         </form>
 
-        <div class="mt-6 divide-y divide-[#2a1d17]/13 border-t border-b border-[#2a1d17]/13">
+        <div class="mt-6 divide-y divide-[#0f172a]/13 border-t border-b border-[#0f172a]/13">
             @forelse ($reports as $item)
-                <a href="{{ route('tracking.show', $item->ticket_code) }}" class="block py-5 px-3 -mx-3 rounded-[8px] hover:bg-[#dad5ca]/50 transition">
+                <a href="{{ route('tracking.show', $item->ticket_code) }}" class="block py-5 px-3 -mx-3 rounded-[8px] hover:bg-[#eceff4]/50 transition">
                     <div class="flex flex-wrap items-center justify-between gap-2 text-[13px]">
                         <div class="flex flex-wrap items-center gap-2.5">
-                            <span class="font-mono text-[#65564c]">{{ $item->ticket_code }}</span>
+                            <span class="font-mono text-[#475569]">{{ $item->ticket_code }}</span>
                             <span class="px-2.5 py-0.5 rounded-[6px] font-medium {{ $item->status_badge_class }}">{{ $item->status_label }}</span>
-                            <span class="text-[#65564c]">{{ $item->jenis_laporan }}</span>
+                            <span class="text-[#475569]">{{ $item->jenis_laporan }}</span>
                             @if ($item->category)
-                                <span class="text-[#65564c]">&middot; {{ $item->category->name }}</span>
+                                <span class="text-[#475569]">&middot; {{ $item->category->name }}</span>
                             @endif
                         </div>
-                        <span class="font-mono text-[#65564c]">{{ $item->created_at->format('d M Y') }}</span>
+                        <span class="font-mono text-[#475569]">{{ $item->created_at->format('d M Y') }}</span>
                     </div>
 
-                    <h2 class="mt-2 text-[18px] font-medium text-[#2a1d17]">{{ $item->judul_laporan }}</h2>
-                    <p class="mt-1.5 text-[15px] text-[#65564c] leading-relaxed">{{ \Illuminate\Support\Str::limit($item->isi_laporan, 220) }}</p>
+                    <h2 class="mt-2 text-[18px] font-medium text-[#0f172a]">{{ $item->judul_laporan }}</h2>
+                    <p class="mt-1.5 text-[15px] text-[#475569] leading-relaxed">{{ \Illuminate\Support\Str::limit($item->isi_laporan, 220) }}</p>
 
-                    <div class="mt-3 flex items-center justify-between text-[13px] text-[#65564c]">
+                    <div class="mt-3 flex items-center justify-between text-[13px] text-[#475569]">
                         <span>{{ $item->public_reporter_name }}</span>
-                        <span class="font-medium text-[#456f3a]">{{ $item->public_responses_count }} riwayat progres &rarr;</span>
+                        <span class="font-medium text-[#1e3a8a]">{{ $item->public_responses_count }} riwayat progres &rarr;</span>
                     </div>
                 </a>
             @empty
-                <div class="py-12 text-center text-[15px] text-[#65564c]">
+                <div class="py-12 text-center text-[15px] text-[#475569]">
                     Tidak ada laporan publik yang cocok dengan filter pencarian.
                 </div>
             @endforelse
