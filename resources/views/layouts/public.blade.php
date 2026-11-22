@@ -3,45 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'SILIRA — Layanan Aspirasi & Pengaduan DPM FDIK')</title>
+    <title>@yield('title', 'SILIRA — Portal Aspirasi DPM FDIK')</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800|jetbrains-mono:500,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700|jetbrains-mono:400,500,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-[#FAFAFA] text-slate-900 antialiased min-h-screen flex flex-col">
-    <header class="no-print sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-            <a href="{{ route('home') }}" class="hover:opacity-90 transition">
-                <x-brand-logo subtitle="DPM Fakultas Dakwah & Ilmu Komunikasi" />
+<body class="bg-[#F7F7F5] text-stone-900 antialiased min-h-screen flex flex-col">
+    <header class="no-print sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-stone-200">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+            <a href="{{ route('home') }}" class="hover:opacity-85 transition">
+                <x-brand-logo size="sm" subtitle="DPM FDIK" />
             </a>
 
-            <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
-                <a href="{{ route('home') }}" class="px-3.5 py-2 rounded-lg transition {{ request()->routeIs('home') ? 'bg-slate-900 text-white font-semibold' : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100' }}">Beranda</a>
-                <a href="{{ route('reports.create') }}" class="px-3.5 py-2 rounded-lg transition {{ request()->routeIs('reports.*') ? 'bg-slate-900 text-white font-semibold' : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100' }}">Buat Laporan</a>
-                <a href="{{ route('tracking.index') }}" class="px-3.5 py-2 rounded-lg transition {{ request()->routeIs('tracking.*') ? 'bg-slate-900 text-white font-semibold' : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100' }}">Lacak Tiket</a>
-                <a href="{{ route('public.feed') }}" class="px-3.5 py-2 rounded-lg transition {{ request()->routeIs('public.feed') ? 'bg-slate-900 text-white font-semibold' : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100' }}">Aspirasi Publik</a>
+            <nav class="hidden md:flex items-center gap-1 text-[13px] font-medium">
+                <a href="{{ route('home') }}" class="px-3 py-1.5 rounded-md transition {{ request()->routeIs('home') ? 'bg-stone-100 text-stone-950 font-semibold' : 'text-stone-600 hover:text-stone-950 hover:bg-stone-50' }}">Beranda</a>
+                <a href="{{ route('reports.create') }}" class="px-3 py-1.5 rounded-md transition {{ request()->routeIs('reports.*') ? 'bg-stone-100 text-stone-950 font-semibold' : 'text-stone-600 hover:text-stone-950 hover:bg-stone-50' }}">Buat Laporan</a>
+                <a href="{{ route('tracking.index') }}" class="px-3 py-1.5 rounded-md transition {{ request()->routeIs('tracking.*') ? 'bg-stone-100 text-stone-950 font-semibold' : 'text-stone-600 hover:text-stone-950 hover:bg-stone-50' }}">Lacak Tiket</a>
+                <a href="{{ route('public.feed') }}" class="px-3 py-1.5 rounded-md transition {{ request()->routeIs('public.feed') ? 'bg-stone-100 text-stone-950 font-semibold' : 'text-stone-600 hover:text-stone-950 hover:bg-stone-50' }}">Aspirasi Publik</a>
             </nav>
 
             <div class="flex items-center gap-2">
                 @auth
-                    <a href="{{ route('admin.dashboard') }}" class="btn-press inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-white hover:bg-slate-800">
-                        Dashboard DPM
+                    <a href="{{ route('admin.dashboard') }}" class="btn-press px-3 py-1.5 rounded-lg text-xs font-semibold bg-stone-900 text-white hover:bg-stone-800">
+                        Dashboard
                     </a>
                 @else
-                    <a href="{{ route('admin.login') }}" class="btn-press inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-400">
-                        Portal Admin
+                    <a href="{{ route('admin.login') }}" class="btn-press px-3 py-1.5 rounded-lg text-xs font-medium border border-stone-300 bg-white text-stone-700 hover:bg-stone-50">
+                        Admin
                     </a>
                 @endauth
             </div>
         </div>
 
-        {{-- Mobile quick nav --}}
-        <div class="md:hidden border-t border-slate-100 px-4 py-2 flex items-center gap-1.5 overflow-x-auto text-xs font-medium bg-white">
-            <a href="{{ route('home') }}" class="px-3 py-1.5 rounded-lg whitespace-nowrap {{ request()->routeIs('home') ? 'bg-slate-900 text-white font-semibold' : 'text-slate-600' }}">Beranda</a>
-            <a href="{{ route('reports.create') }}" class="px-3 py-1.5 rounded-lg whitespace-nowrap {{ request()->routeIs('reports.*') ? 'bg-slate-900 text-white font-semibold' : 'text-slate-600' }}">Buat Laporan</a>
-            <a href="{{ route('tracking.index') }}" class="px-3 py-1.5 rounded-lg whitespace-nowrap {{ request()->routeIs('tracking.*') ? 'bg-slate-900 text-white font-semibold' : 'text-slate-600' }}">Lacak Tiket</a>
-            <a href="{{ route('public.feed') }}" class="px-3 py-1.5 rounded-lg whitespace-nowrap {{ request()->routeIs('public.feed') ? 'bg-slate-900 text-white font-semibold' : 'text-slate-600' }}">Aspirasi Publik</a>
+        <div class="md:hidden border-t border-stone-100 px-4 py-1.5 flex items-center gap-1 overflow-x-auto text-xs font-medium bg-white">
+            <a href="{{ route('home') }}" class="px-2.5 py-1 rounded-md whitespace-nowrap {{ request()->routeIs('home') ? 'bg-stone-100 text-stone-950 font-semibold' : 'text-stone-600' }}">Beranda</a>
+            <a href="{{ route('reports.create') }}" class="px-2.5 py-1 rounded-md whitespace-nowrap {{ request()->routeIs('reports.*') ? 'bg-stone-100 text-stone-950 font-semibold' : 'text-stone-600' }}">Buat Laporan</a>
+            <a href="{{ route('tracking.index') }}" class="px-2.5 py-1 rounded-md whitespace-nowrap {{ request()->routeIs('tracking.*') ? 'bg-stone-100 text-stone-950 font-semibold' : 'text-stone-600' }}">Lacak Tiket</a>
+            <a href="{{ route('public.feed') }}" class="px-2.5 py-1 rounded-md whitespace-nowrap {{ request()->routeIs('public.feed') ? 'bg-stone-100 text-stone-950 font-semibold' : 'text-stone-600' }}">Aspirasi</a>
         </div>
     </header>
 
@@ -49,19 +48,16 @@
         @yield('content')
     </main>
 
-    <footer class="no-print border-t border-slate-200/80 bg-white mt-20">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-            <div>
-                <x-brand-logo size="sm" subtitle="Sistem Integrasi Layanan Interaksi dan Respon Aspirasi" />
-                <p class="text-xs text-slate-500 mt-3 max-w-md leading-relaxed">
-                    Program kerja resmi Dewan Perwakilan Mahasiswa (DPM) Fakultas Dakwah dan Ilmu Komunikasi untuk pengelolaan aspirasi yang transparan dan terukur.
-                </p>
+    <footer class="no-print border-t border-stone-200 bg-white mt-16">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-stone-500">
+            <div class="flex items-center gap-2.5">
+                <x-brand-logo size="sm" :markOnly="true" />
+                <span><strong class="text-stone-800 font-semibold">SILIRA</strong> &middot; Dewan Perwakilan Mahasiswa Fakultas Dakwah dan Ilmu Komunikasi</span>
             </div>
-            <div class="flex flex-wrap items-center gap-5 text-xs font-medium text-slate-600">
-                <a href="{{ route('reports.create') }}" class="hover:text-red-700 transition">Buat Laporan</a>
-                <a href="{{ route('tracking.index') }}" class="hover:text-red-700 transition">Lacak Tiket</a>
-                <a href="{{ route('public.feed') }}" class="hover:text-red-700 transition">Aspirasi Publik</a>
-                <a href="{{ route('admin.login') }}" class="hover:text-red-700 transition">Portal Admin DPM</a>
+            <div class="flex items-center gap-4">
+                <a href="{{ route('reports.create') }}" class="hover:text-stone-900">Buat Laporan</a>
+                <a href="{{ route('tracking.index') }}" class="hover:text-stone-900">Lacak Tiket</a>
+                <a href="{{ route('admin.login') }}" class="hover:text-stone-900">Admin DPM</a>
             </div>
         </div>
     </footer>

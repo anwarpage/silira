@@ -65,9 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 options.forEach((o) => {
                     const active = o === opt;
                     o.setAttribute('aria-selected', active ? 'true' : 'false');
-                    o.classList.toggle('bg-red-50/80', active);
-                    o.classList.toggle('text-red-900', active);
-                    o.classList.toggle('text-slate-700', !active);
+                    o.classList.toggle('bg-stone-100', active);
+                    o.classList.toggle('text-stone-950', active);
+                    o.classList.toggle('text-stone-700', !active);
                     const check = o.querySelector('[data-option-check]');
                     check?.classList.toggle('opacity-0', !active);
                 });

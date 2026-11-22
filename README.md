@@ -1,74 +1,63 @@
-# SILIRA — Sistem Integrasi Layanan Interaksi dan Respon Aspirasi
+# SILIRA
 
-Portal layanan aspirasi, pengaduan, dan permintaan informasi mahasiswa **Fakultas Dakwah dan Ilmu Komunikasi (FDIK)** yang dikembangkan untuk program kerja **Dewan Perwakilan Mahasiswa (DPM)**, terinspirasi dari [LAPOR! (lapor.go.id)](https://lapor.go.id/).
+**Sistem Integrasi Layanan Interaksi dan Respon Aspirasi** — portal pengelolaan aspirasi, pengaduan, dan permintaan informasi mahasiswa untuk program kerja Dewan Perwakilan Mahasiswa (DPM) Fakultas Dakwah dan Ilmu Komunikasi.
 
-> **Riwayat Evolusi Project**
-> - **v1 (`v1-php-native`, November 2024)**: Prototipe awal berbasis PHP Native + MySQLi + Bootstrap 4. Tetap diarsipkan secara utuh pada Git tag [`v1-php-native`](../../releases/tag/v1-php-native).
-> - **v2 (Laravel Refactor)**: Pengembangan lanjutan menggunakan **Laravel**, **Tailwind CSS**, sistem **Kode Tiket Pelacakan tanpa login**, **Opsi Privasi (`Publik`, `Anonim`, `Rahasia`)**, **Interaksi 2 Arah**, dan **Dashboard Admin DPM**.
+## Latar Belakang & Evolusi
 
----
+- **`v1-php-native` (November 2024)**: Prototipe awal berbasis PHP Native, MySQLi, dan Bootstrap 4. Diarsipkan pada tag Git [`v1-php-native`](../../releases/tag/v1-php-native).
+- **`v2` (Laravel)**: Refactor penuh untuk menghadirkan pelacakan kode tiket tanpa login, interaksi dua arah, kontrol privasi tiga tingkat, autentikasi pengurus, dan arsip laporan lintas periode.
 
-## Alur & Fitur Utama
+## Mengapa Tidak Sekadar Google Form?
 
-### Portal Publik (Tanpa Login)
-- **Formulir Aspirasi & Pengaduan (`/lapor`)**: Klasifikasi (`Aspirasi`, `Pengaduan`, `Permintaan Informasi`), kategori bidang fakultas, opsi privasi (`Publik`, `Anonim`, `Rahasia`), lokasi/tanggal kejadian, serta upload lampiran bukti (JPG/PNG/WEBP/PDF maks. 5 MB).
-- **Kode Tiket Unik (`SLR-YYYY-XXXXXX`)**: Dihasilkan otomatis setelah pelaporan, lengkap dengan tombol salin kode dan cetak bukti lapor.
-- **Lacak Status & Interaksi 2 Arah (`/lacak`)**: Pelapor memantau progres status (`Menunggu` → `Diverifikasi` → `Diproses` → `Selesai`/`Ditolak`), membaca tanggapan resmi DPM, serta mengirim klarifikasi atau bukti tambahan langsung pada tiket tanpa perlu membuat akun.
-- **Beranda & Feed Transparansi (`/`, `/aspirasi`)**: Statistik transparansi real-time dan daftar aspirasi publik (laporan `Rahasia` tidak dipublikasikan, laporan `Anonim` menyembunyikan nama pelapor).
+Google Form hanya mengumpulkan data satu arah ke spreadsheet. SILIRA menyelesaikan empat keterbatasan utamanya:
 
-### Portal Admin DPM (`/admin`)
-- **Autentikasi Pengurus**: Login terproteksi session & bcrypt hashing.
-- **Dashboard Statistik**: Ringkasan jumlah laporan per status, distribusi kategori bidang, dan distribusi klasifikasi.
-- **Manajemen & Tindak Lanjut Laporan**: Pencarian, filter (status, kategori, bulan), pembaruan status + tanggapan resmi, **Catatan Internal DPM** (tidak terlihat pelapor), tombol cepat hubungi pelapor via WhatsApp, edit, dan hapus laporan.
-- **Export CSV/Excel**: Mengunduh rekap laporan sesuai filter yang sedang aktif (UTF-8 BOM, siap buka di Microsoft Excel).
-- **Kelola Kategori Bidang & Akun Pengurus DPM**.
+1. **Pelacakan status berbasis kode tiket** — pelapor tidak perlu login dan selalu tahu progres laporannya (`Menunggu` → `Diverifikasi` → `Diproses` → `Selesai`/`Ditolak`).
+2. **Interaksi dua arah** — pelapor dapat mengirim klarifikasi atau bukti tambahan langsung pada tiket yang sama.
+3. **Kontrol privasi terstruktur** — mendukung mode `Publik`, `Anonim` (identitas disembunyikan), dan `Rahasia` (tidak tampil di feed publik).
+4. **Akuntabilitas & catatan internal** — pengurus DPM memiliki catatan koordinasi internal yang terpisah dari tanggapan publik serta ekspor rekap sesuai filter.
 
----
+## Ringkasan Fitur
 
-## Cara Menjalankan di Lokal
+- **Portal Publik**: Beranda ringkas + statistik transparansi, formulir laporan dengan upload bukti (JPG/PNG/WEBP/PDF maks. 5 MB), bukti kode tiket cetak/salin, halaman pelacakan & balasan dua arah, serta feed aspirasi publik dengan filter.
+- **Portal Admin DPM**: Dashboard metrik & distribusi bidang, daftar laporan dengan pencarian & filter, tindak lanjut status + tanggapan resmi/catatan internal, tautan WhatsApp langsung ke pelapor, edit/hapus laporan, ekspor CSV (UTF-8 BOM untuk Excel), serta manajemen kategori dan akun pengurus.
 
-### Prasyarat
-- PHP 8.2+ (dengan ekstensi `pdo_sqlite` / `pdo_mysql`, `fileinfo`, `mbstring`)
-- Composer
-- Node.js & npm
+## Instalasi Lokal
 
-### Langkah Instalasi
+Prasyarat: PHP 8.2+, Composer, Node.js & npm.
+
 ```bash
-# 1. Install dependensi PHP & Frontend
 composer install
 npm install
-
-# 2. Salin konfigurasi environment & generate app key
 cp .env.example .env
 php artisan key:generate
-
-# 3. Migrasi database & isi data demo (default menggunakan SQLite)
 php artisan migrate --seed
-
-# 4. Buat symlink storage untuk lampiran bukti
 php artisan storage:link
-
-# 5. Build aset frontend & jalankan server lokal
 npm run build
 php artisan serve
 ```
 
-> **Ingin menggunakan MySQL?** Cukup ubah `DB_CONNECTION=mysql` beserta `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` pada file `.env`, lalu jalankan `php artisan migrate --seed`.
+Secara default aplikasi menggunakan SQLite agar langsung berjalan. Untuk menggunakan MySQL, ubah `DB_CONNECTION=mysql` beserta kredensial database di `.env`, lalu jalankan `php artisan migrate --seed`.
 
-### Akun Demo Admin DPM (Seeder)
-- **URL Login**: `http://127.0.0.1:8000/admin/login`
-- **Email**: `admin@silira.ac.id`
-- **Password**: `password123`
+## Data & Akun Demo (Seeder)
 
-### Contoh Kode Tiket Demo (Seeder)
-- `SLR-2026-FDIK01` (Pengaduan — Selesai, dengan timeline lengkap)
-- `SLR-2026-FDIK02` (Aspirasi Anonim — Sedang Diproses)
-- `SLR-2026-FDIK03` (Permintaan Informasi — Diverifikasi)
-- `SLR-2026-FDIK04` (Pengaduan Rahasia — Menunggu Verifikasi)
+### Akun Admin DPM (`/admin/login`)
 
----
+| Peran | Email | Password |
+| :--- | :--- | :--- |
+| Super Admin (Komisi Aspirasi) | `admin@silira.ac.id` | `password123` |
+| Admin DPM (Sekretariat) | `sekretariat@silira.ac.id` | `password123` |
 
-## Pengujian Otomatis
+### Contoh Kode Tiket (`/lacak`)
+
+| Kode Tiket | Jenis | Privasi | Status |
+| :--- | :--- | :--- | :--- |
+| `SLR-2026-FDIK01` | Pengaduan | Publik | Selesai |
+| `SLR-2026-FDIK02` | Aspirasi | Anonim | Sedang Diproses |
+| `SLR-2026-FDIK03` | Permintaan Informasi | Publik | Diverifikasi |
+| `SLR-2026-FDIK04` | Pengaduan | Rahasia | Menunggu Verifikasi |
+
+## Pengujian
+
 ```bash
 php artisan test
 ```

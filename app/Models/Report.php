@@ -111,12 +111,12 @@ class Report extends Model
     public function getStatusBadgeClassAttribute(): string
     {
         return match ($this->status) {
-            'menunggu' => 'bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-600/20',
-            'diverifikasi' => 'bg-sky-50 text-sky-800 ring-1 ring-inset ring-sky-600/20',
-            'diproses' => 'bg-indigo-50 text-indigo-800 ring-1 ring-inset ring-indigo-600/20',
-            'selesai' => 'bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-600/20',
-            'ditolak' => 'bg-rose-50 text-rose-800 ring-1 ring-inset ring-rose-600/20',
-            default => 'bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-500/20',
+            'menunggu' => 'bg-amber-50 text-amber-800 border border-amber-200/80',
+            'diverifikasi' => 'bg-sky-50 text-sky-800 border border-sky-200/80',
+            'diproses' => 'bg-indigo-50 text-indigo-800 border border-indigo-200/80',
+            'selesai' => 'bg-emerald-50 text-emerald-800 border border-emerald-200/80',
+            'ditolak' => 'bg-rose-50 text-rose-800 border border-rose-200/80',
+            default => 'bg-stone-100 text-stone-700 border border-stone-200',
         };
     }
 
