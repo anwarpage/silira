@@ -25,10 +25,14 @@
                 <input type="text" name="name" required placeholder="Nama Lengkap" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm">
                 <input type="email" name="email" required placeholder="Email (mis. komisi2@silira.ac.id)" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm">
                 <input type="text" name="jabatan" placeholder="Jabatan / Komisi (opsional)" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm">
-                <select name="role" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm">
-                    <option value="admin_dpm">Admin DPM</option>
-                    <option value="superadmin">Super Admin</option>
-                </select>
+                <x-select-dropdown
+                    name="role"
+                    :options="[
+                        ['value' => 'admin_dpm', 'label' => 'Admin DPM', 'description' => 'Mengelola laporan, tanggapan, dan kategori.'],
+                        ['value' => 'superadmin', 'label' => 'Super Admin', 'description' => 'Akses penuh termasuk pengelolaan akun pengurus.'],
+                    ]"
+                    selected="admin_dpm"
+                />
                 <div class="grid grid-cols-2 gap-3">
                     <input type="password" name="password" required placeholder="Password (min 8)" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm">
                     <input type="password" name="password_confirmation" required placeholder="Konfirmasi Password" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm">
