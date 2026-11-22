@@ -1,6 +1,32 @@
-# Silira
+<div align="center">
+  <br />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/silira-logo-dark.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="docs/brand/silira-logo-light.svg" />
+    <img src="docs/brand/silira-logo-light.svg" alt="Silira" height="48" />
+  </picture>
+  <br /><br />
+  <p>
+    <strong>Sistem Integrasi Layanan Interaksi dan Respon Aspirasi</strong><br />
+    Portal aspirasi, pengaduan, dan permintaan informasi mahasiswa untuk program kerja<br />
+    Dewan Perwakilan Mahasiswa (DPM) Fakultas Dakwah dan Ilmu Komunikasi.
+  </p>
 
-**Sistem Integrasi Layanan Interaksi dan Respon Aspirasi** — portal layanan aspirasi, pengaduan, dan permintaan informasi mahasiswa untuk program kerja **Dewan Perwakilan Mahasiswa (DPM) Fakultas Dakwah dan Ilmu Komunikasi**.
+  <p>
+    <img src="https://img.shields.io/badge/PHP-8.2%2B-0F172A?style=flat-square" alt="PHP 8.2+" />
+    <img src="https://img.shields.io/badge/Laravel-13-1E3A8A?style=flat-square" alt="Laravel 13" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS-4-0F172A?style=flat-square" alt="Tailwind CSS 4" />
+    <img src="https://img.shields.io/badge/License-MIT-475569?style=flat-square" alt="MIT License" />
+  </p>
+
+  <p>
+    <a href="#mengapa-silira">Mengapa Silira</a> &middot;
+    <a href="#fitur-utama">Fitur</a> &middot;
+    <a href="#skema-database">Database</a> &middot;
+    <a href="#instalasi-lokal">Instalasi</a> &middot;
+    <a href="#kontribusi--komunitas">Kontribusi</a>
+  </p>
+</div>
 
 ---
 
@@ -9,36 +35,44 @@
 - **`v1-php-native` (November 2024)** — Prototipe awal berbasis PHP Native, MySQLi, dan Bootstrap 4. Diarsipkan secara utuh pada Git tag [`v1-php-native`](../../releases/tag/v1-php-native).
 - **`v2` (Laravel)** — Refactor menyeluruh ke Laravel untuk menghadirkan pelacakan kode tiket tanpa login, interaksi dua arah, kontrol privasi tiga tingkat, autentikasi pengurus, dan dokumentasi tindak lanjut lintas periode.
 
-## Mengapa Tidak Sekadar Google Form?
+## Mengapa Silira
 
-Google Form hanya mengumpulkan data satu arah ke spreadsheet. Silira menyelesaikan empat kebutuhan inti pengelolaan aspirasi fakultas:
+Google Form efektif untuk mengumpulkan data satu arah ke spreadsheet, tetapi pengelolaan aspirasi mahasiswa membutuhkan alur tindak lanjut yang terukur:
 
-1. **Kepastian status via kode tiket** — Pelapor tidak perlu login dan selalu dapat memeriksa status laporannya (`Menunggu` → `Diverifikasi` → `Diproses` → `Selesai` / `Ditolak`).
-2. **Interaksi dua arah** — Pelapor dapat mengirim klarifikasi atau bukti tambahan langsung pada halaman tiket yang sama.
-3. **Privasi tiga tingkat** — Mendukung mode `Publik`, `Anonim` (nama disembunyikan dari publik), dan `Rahasia` (tidak tampil di feed publik).
-4. **Akuntabilitas & estafet DPM** — Menyediakan catatan koordinasi internal terpisah dari publik, statistik transparansi, serta ekspor rekap sesuai filter.
-
----
-
-## Tech Stack
-
-- **Backend**: PHP 8.2+, Laravel 13, Eloquent ORM
-- **Frontend**: Blade Templates, Tailwind CSS v4, Vite, Vanilla JavaScript
-- **Database**: SQLite (default development) / MySQL 8+ (siap pakai melalui Laravel Migrations)
-- **Testing**: PHPUnit (`Feature Tests`)
+| Aspek | Google Form | Silira |
+| :--- | :--- | :--- |
+| **Kepastian status** | Berhenti di tombol *Submit* | Kode tiket unik (`SLR-YYYY-XXXXXX`) dengan status real-time tanpa login |
+| **Komunikasi** | Satu arah | Interaksi dua arah & lampiran tambahan langsung pada halaman tiket |
+| **Kontrol privasi** | Masuk sheet internal tanpa opsi publik | Tiga tingkat privasi: `Publik`, `Anonim`, dan `Rahasia` |
+| **Estafet pengurus** | Rekap manual di spreadsheet | Dashboard metrik, catatan internal DPM terpisah, & ekspor CSV terfilter |
 
 ---
 
-## Struktur Direktori Utama
+## Fitur Utama
+
+### Portal Publik (Tanpa Login)
+- **Formulir Aspirasi & Pengaduan** (`/lapor`) — Klasifikasi (`Aspirasi`, `Pengaduan`, `Permintaan Informasi`), kategori bidang dengan pencarian, opsi privasi tiga tingkat, serta upload bukti (JPG/PNG/WEBP/PDF maks. 5 MB).
+- **Kode Tiket & Bukti Lapor** (`/lapor/sukses/{ticketCode}`) — Kode unik otomatis dengan tombol salin dan mode cetak bukti.
+- **Pelacakan & Interaksi Dua Arah** (`/lacak`) — Progress bar 4 tahap (`Menunggu` → `Diverifikasi` → `Diproses` → `Selesai`), timeline respon resmi DPM, dan balasan lanjutan dari pelapor.
+- **Direktori Aspirasi Publik** (`/aspirasi`) — Transparansi laporan `Publik` dan `Anonim` dengan pencarian serta filter kategori, klasifikasi, dan status.
+
+### Portal Admin DPM (`/admin`)
+- **Dashboard Operasional** — Ringkasan metrik, tingkat penyelesaian, distribusi kategori bidang, klasifikasi, dan komposisi status.
+- **Manajemen & Tindak Lanjut Laporan** — Pencarian, filter multi-kriteria, pembaruan status, tanggapan resmi, **Catatan Internal DPM** (tidak tampil ke pelapor), tautan WhatsApp langsung, edit, hapus, serta ekspor CSV (UTF-8 BOM untuk Excel).
+- **Pengelolaan Master Data** — CRUD kategori bidang dan manajemen akun pengurus DPM.
+
+---
+
+## Arsitektur & Struktur Direktori
 
 ```text
 app/
 ├── Http/Controllers/
 │   ├── HomeController.php              # Beranda & feed aspirasi publik
-│   ├── ReportController.php            # Form kirim laporan & halaman kode tiket
-│   ├── TrackingController.php          # Pelacakan kode tiket & balasan 2 arah pelapor
+│   ├── ReportController.php            # Form kirim laporan & bukti kode tiket
+│   ├── TrackingController.php          # Pelacakan kode tiket & balasan 2 arah
 │   └── Admin/
-│       ├── AuthController.php          # Login & logout pengurus DPM
+│       ├── AuthController.php          # Autentikasi pengurus DPM
 │       ├── DashboardController.php     # Metrik & distribusi laporan
 │       ├── ReportController.php        # CRUD, tindak lanjut, catatan internal, export CSV
 │       ├── CategoryController.php      # Kelola kategori bidang
@@ -64,73 +98,72 @@ resources/views/
 
 ## Skema Database
 
-Aplikasi menggunakan empat tabel inti yang dikelola melalui `database/migrations/`:
+```mermaid
+erDiagram
+    CATEGORIES ||--o{ REPORTS : "mengelompokkan"
+    REPORTS ||--o{ REPORT_RESPONSES : "memiliki riwayat"
+    USERS ||--o{ REPORT_RESPONSES : "menanggapi"
 
-### 1. `users`
-Menyimpan akun pengurus DPM yang berhak mengakses `/admin`.
+    USERS {
+        bigint id PK
+        string name
+        string email UK
+        string role
+        string jabatan
+        string password
+    }
 
-| Kolom | Tipe | Keterangan |
-| :--- | :--- | :--- |
-| `id` | bigint (PK) | ID pengurus |
-| `name` | string | Nama lengkap pengurus |
-| `email` | string (unique) | Email login |
-| `role` | string(30) | `superadmin` atau `admin_dpm` |
-| `jabatan` | string(120), nullable | Komisi / jabatan di DPM |
-| `password` | string | Hash bcrypt |
+    CATEGORIES {
+        bigint id PK
+        string name UK
+        string slug UK
+        string description
+        boolean is_active
+    }
 
-### 2. `categories`
-Daftar bidang tujuan laporan yang dapat dikelola dari panel admin.
+    REPORTS {
+        bigint id PK
+        string ticket_code UK
+        enum jenis_laporan
+        bigint category_id FK
+        enum privacy
+        string nama_pelapor
+        string nim_nip
+        string jurusan_instansi
+        string no_wa
+        string judul_laporan
+        text isi_laporan
+        date tanggal_kejadian
+        string lokasi_kejadian
+        string attachment_path
+        enum status
+        timestamp verified_at
+        timestamp resolved_at
+    }
 
-| Kolom | Tipe | Keterangan |
-| :--- | :--- | :--- |
-| `id` | bigint (PK) | ID kategori |
-| `name` | string(100), unique | Nama bidang |
-| `slug` | string(120), unique | Slug unik |
-| `description` | string(255), nullable | Deskripsi ruang lingkup |
-| `is_active` | boolean | Status aktif di form publik |
+    REPORT_RESPONSES {
+        bigint id PK
+        bigint report_id FK
+        bigint user_id FK
+        enum sender_type
+        string sender_name
+        text message
+        string attachment_path
+        string status_from
+        string status_to
+        boolean is_internal
+    }
+```
 
-### 3. `reports`
-Menyimpan seluruh aspirasi, pengaduan, dan permintaan informasi mahasiswa.
-
-| Kolom | Tipe | Keterangan |
-| :--- | :--- | :--- |
-| `id` | bigint (PK) | ID laporan |
-| `ticket_code` | string(32), unique | Kode tiket pelacakan (`SLR-YYYY-XXXXXX`) |
-| `jenis_laporan` | enum | `Aspirasi`, `Pengaduan`, `Permintaan Informasi` |
-| `category_id` | FK → `categories.id` | Bidang tujuan (`nullOnDelete`) |
-| `privacy` | enum | `public`, `anonymous`, `confidential` |
-| `nama_pelapor`, `nim_nip`, `jurusan_instansi`, `no_wa` | string | Identitas verifikasi pelapor |
-| `judul_laporan` | string(255) | Ringkasan laporan |
-| `isi_laporan` | text | Uraian lengkap laporan |
-| `tanggal_kejadian`, `lokasi_kejadian` | date / string, nullable | Konteks kejadian (opsional) |
-| `attachment_path`, `attachment_name` | string, nullable | Path & nama asli lampiran bukti |
-| `status` | enum | `menunggu`, `diverifikasi`, `diproses`, `selesai`, `ditolak` |
-| `verified_at`, `resolved_at` | timestamp, nullable | Cap waktu verifikasi & penyelesaian |
-
-### 4. `report_responses`
-Menyimpan timeline perubahan status, tanggapan resmi DPM, balasan pelapor, dan catatan internal.
-
-| Kolom | Tipe | Keterangan |
-| :--- | :--- | :--- |
-| `id` | bigint (PK) | ID riwayat |
-| `report_id` | FK → `reports.id` | Laporan terkait (`cascadeOnDelete`) |
-| `user_id` | FK → `users.id`, nullable | Terisi jika pengirim adalah admin DPM |
-| `sender_type` | enum | `admin`, `reporter`, `system` |
-| `sender_name` | string(120) | Nama pengirim yang tampil di timeline |
-| `message` | text | Isi tanggapan / log |
-| `attachment_path`, `attachment_name` | string, nullable | Lampiran pendukung tanggapan |
-| `status_from`, `status_to` | string(30), nullable | Transisi status bila ada |
-| `is_internal` | boolean | `true` = catatan internal DPM (tidak tampil ke pelapor) |
-
-### Relasi Utama
-- `Category` `hasMany` `Report`
-- `Report` `belongsTo` `Category`
-- `Report` `hasMany` `ReportResponse`
-- `User` `hasMany` `ReportResponse`
+### Penjelasan Tabel Inti
+- **`users`** — Akun pengurus DPM (`superadmin` dan `admin_dpm`) dengan kata sandi terenkripsi bcrypt.
+- **`categories`** — Bidang tujuan laporan yang dapat diaktifkan/dinonaktifkan dari panel admin.
+- **`reports`** — Entitas laporan utama dengan `ticket_code` unik, mode privasi (`public`, `anonymous`, `confidential`), dan status alur (`menunggu`, `diverifikasi`, `diproses`, `selesai`, `ditolak`).
+- **`report_responses`** — Timeline histori status, tanggapan resmi DPM, balasan dua arah pelapor, serta catatan internal (`is_internal = true`) yang terisolasi dari halaman publik.
 
 ---
 
-## Ringkasan Route
+## Referensi Route
 
 | Akses | Method & Path | Fungsi |
 | :--- | :--- | :--- |
@@ -176,19 +209,19 @@ php artisan serve
 
 Aplikasi berjalan di `http://127.0.0.1:8000`.
 
-### Beralih ke MySQL
-Secara default pengembangan lokal menggunakan SQLite (`database/database.sqlite`). Untuk menggunakan MySQL:
-1. Buat database kosong (misal `silira_db`).
-2. Ubah konfigurasi di `.env`:
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=silira_db
-   DB_USERNAME=root
-   DB_PASSWORD=
-   ```
-3. Jalankan `php artisan migrate --seed`.
+### Konfigurasi MySQL (Opsional)
+Secara default pengembangan lokal menggunakan SQLite (`database/database.sqlite`). Untuk menggunakan MySQL, sesuaikan `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=silira_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Lalu jalankan `php artisan migrate --seed`.
 
 ---
 
@@ -214,7 +247,7 @@ Secara default pengembangan lokal menggunakan SQLite (`database/database.sqlite`
 
 ## Pengujian
 
-Seluruh alur inti (pengiriman tanpa login, kode tiket, privasi, balasan dua arah, proteksi auth admin, catatan internal, dan export CSV) diuji pada `tests/Feature/SiliraWorkflowTest.php`:
+Seluruh alur utama diuji otomatis pada `tests/Feature/SiliraWorkflowTest.php`:
 
 ```bash
 php artisan test
@@ -222,10 +255,14 @@ php artisan test
 
 ---
 
-## Kontribusi
+## Kontribusi & Komunitas
 
-Kontribusi untuk pengembangan fitur, perbaikan bug, maupun peningkatan dokumentasi sangat terbuka. Silakan baca panduan lengkapnya di [CONTRIBUTING.md](CONTRIBUTING.md).
+Kontribusi dari pengembang, mahasiswa, maupun pengurus organisasi kampus sangat terbuka:
+
+- **Laporan Bug & Usulan Fitur** — Buka [GitHub Issues](https://github.com/anwarpage/silira/issues) dengan langkah reproduksi atau konteks kebutuhan yang jelas.
+- **Pull Request** — Baca alur branch, konvensi commit, dan checklist pengujian pada [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Keamanan** — Jika menemukan celah keamanan terkait privasi laporan atau autentikasi, hindari mempublikasikan detail eksploitasi secara terbuka dan hubungi pengelola repositori secara langsung.
 
 ## Lisensi
 
-Proyek ini dirilis di bawah lisensi [MIT](LICENSE).
+Dirilis di bawah lisensi [MIT](LICENSE).
