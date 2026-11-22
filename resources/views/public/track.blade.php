@@ -1,45 +1,45 @@
 @extends('layouts.public')
 
-@section('title', $report ? "Tiket {$report->ticket_code} — SILIRA" : 'Lacak Tiket — SILIRA')
+@section('title', $report ? "Tiket {$report->ticket_code} — Silira" : 'Lacak tiket — Silira')
 
 @section('content')
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
-        <div class="bg-white rounded-xl border border-stone-200 p-5 sm:p-6">
-            <h1 class="text-lg font-bold tracking-tight text-stone-950">Lacak Status Laporan</h1>
-            <p class="mt-1 text-xs text-stone-600">Masukkan kode tiket untuk melihat progres dan berinteraksi dengan Admin DPM.</p>
+    <div class="max-w-3xl mx-auto px-6 py-12">
+        <div class="s-card p-6 sm:p-7">
+            <h1 class="text-[26px] font-medium text-[#2a1d17]">Lacak status tiket</h1>
+            <p class="mt-1.5 text-[15px] text-[#65564c]">Masukkan kode tiket untuk melihat progres dan mengirim tanggapan tambahan.</p>
 
-            <form action="{{ route('tracking.lookup') }}" method="POST" class="mt-4 flex flex-col sm:flex-row gap-2.5">
+            <form action="{{ route('tracking.lookup') }}" method="POST" class="mt-5 flex flex-col sm:flex-row gap-3">
                 @csrf
                 <input
                     type="text"
                     name="ticket_code"
                     value="{{ old('ticket_code', $searchedCode) }}"
                     placeholder="Contoh: SLR-2026-FDIK01"
-                    class="flex-1 px-3.5 py-2.5 rounded-lg border border-stone-300 bg-stone-50/70 text-sm font-mono uppercase placeholder:normal-case placeholder:font-sans focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-900/15 focus:border-emerald-800"
+                    class="s-input font-mono uppercase placeholder:normal-case placeholder:font-sans"
                     required
                 >
-                <button type="submit" class="btn-press px-5 py-2.5 rounded-lg bg-emerald-900 text-white text-sm font-semibold hover:bg-emerald-950 cursor-pointer">
-                    Cari Tiket
+                <button type="submit" class="s-btn-primary h-[48px] shrink-0">
+                    Cari tiket
                 </button>
             </form>
         </div>
 
         @if (session('success'))
-            <div class="mt-5 rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-3 text-xs font-medium text-emerald-900">
+            <div class="mt-5 rounded-[10px] bg-[#d9e7d6] border border-[#456f3a]/30 px-4 py-3 text-[14px] font-medium text-[#284b20]">
                 {{ session('success') }}
             </div>
         @endif
 
         @if (session('error'))
-            <div class="mt-5 rounded-lg bg-rose-50 border border-rose-200 px-4 py-3 text-xs font-medium text-rose-900">
+            <div class="mt-5 rounded-[10px] bg-[#eedcdb] border border-[#9b3a34]/30 px-4 py-3 text-[14px] font-medium text-[#7a2824]">
                 {{ session('error') }}
             </div>
         @endif
 
         @if ($searchedCode && ! $report)
-            <div class="mt-5 bg-white rounded-xl border border-stone-200 p-8 text-center">
-                <p class="text-sm font-semibold text-stone-900">Kode tiket <span class="font-mono text-rose-700">{{ $searchedCode }}</span> tidak ditemukan.</p>
-                <p class="mt-1 text-xs text-stone-500">Pastikan kode tiket sesuai dengan yang Anda terima saat melapor.</p>
+            <div class="mt-6 s-card p-8 text-center">
+                <p class="text-[16px] font-medium text-[#2a1d17]">Kode tiket <span class="font-mono text-[#7a2824]">{{ $searchedCode }}</span> tidak ditemukan.</p>
+                <p class="mt-1.5 text-[14px] text-[#65564c]">Pastikan penulisan kode tiket sesuai dengan yang Anda terima saat melapor.</p>
             </div>
         @endif
 
@@ -50,61 +50,60 @@
                 $currentStep = $order[$report->status] ?? 1;
             @endphp
 
-            <div class="mt-5 bg-white rounded-xl border border-stone-200 p-6">
-                <div class="flex flex-wrap items-center gap-2 text-xs">
-                    <span class="font-mono font-semibold px-2 py-0.5 rounded bg-stone-900 text-white">{{ $report->ticket_code }}</span>
-                    <span class="px-2 py-0.5 rounded-md font-medium {{ $report->status_badge_class }}">{{ $report->status_label }}</span>
-                    <span class="text-stone-500">{{ $report->jenis_laporan }}</span>
-                    <span class="text-stone-300">&middot;</span>
-                    <span class="text-stone-500">{{ $report->privacy_label }}</span>
+            <div class="mt-6 s-card p-6 sm:p-8">
+                <div class="flex flex-wrap items-center gap-2.5 text-[13px]">
+                    <span class="font-mono font-medium px-2.5 py-0.5 rounded-[6px] bg-[#2a1d17] text-[#e5e1d8]">{{ $report->ticket_code }}</span>
+                    <span class="px-2.5 py-0.5 rounded-[6px] font-medium {{ $report->status_badge_class }}">{{ $report->status_label }}</span>
+                    <span class="text-[#65564c]">{{ $report->jenis_laporan }}</span>
+                    <span class="text-[#65564c]">&middot; {{ $report->privacy_label }}</span>
                 </div>
 
-                <h2 class="mt-3 text-xl font-bold tracking-tight text-stone-950">{{ $report->judul_laporan }}</h2>
-                <p class="mt-1 text-xs text-stone-500">
+                <h2 class="mt-4 text-[24px] font-medium leading-snug text-[#2a1d17]">{{ $report->judul_laporan }}</h2>
+                <p class="mt-1.5 text-[14px] text-[#65564c]">
                     {{ $report->public_reporter_name }}
                     @if ($report->category) &middot; {{ $report->category->name }} @endif
                     &middot; {{ $report->created_at->format('d M Y, H:i') }} WIB
                 </p>
 
                 @if ($report->status === 'ditolak')
-                    <div class="mt-5 rounded-lg bg-rose-50 border border-rose-200 p-3.5 text-xs text-rose-900">
-                        <strong>Ditolak:</strong> Lihat alasan resmi dari Admin DPM pada riwayat tindak lanjut di bawah.
+                    <div class="mt-6 rounded-[8px] bg-[#eedcdb] border border-[#9b3a34]/25 p-4 text-[14px] text-[#7a2824]">
+                        Laporan ini berstatus Ditolak. Lihat alasan resmi dari Admin DPM pada riwayat tindak lanjut di bawah.
                     </div>
                 @else
-                    <div class="mt-5 grid grid-cols-4 gap-2">
+                    <div class="mt-6 grid grid-cols-4 gap-2.5">
                         @foreach ($steps as $key => $label)
                             @php $done = $currentStep >= $order[$key]; @endphp
                             <div>
-                                <div class="h-1.5 rounded-full {{ $done ? 'bg-emerald-800' : 'bg-stone-200' }}"></div>
-                                <span class="block mt-1.5 text-[11px] {{ $done ? 'font-semibold text-stone-900' : 'text-stone-400' }}">{{ $label }}</span>
+                                <div class="h-1.5 rounded-full {{ $done ? 'bg-[#456f3a]' : 'bg-[#dad5ca]' }}"></div>
+                                <span class="block mt-2 text-[13px] {{ $done ? 'font-medium text-[#2a1d17]' : 'text-[#65564c]' }}">{{ $label }}</span>
                             </div>
                         @endforeach
                     </div>
                 @endif
 
-                <div class="mt-5 pt-5 border-t border-stone-100">
-                    <p class="text-sm text-stone-800 leading-relaxed whitespace-pre-line">{{ $report->isi_laporan }}</p>
+                <div class="mt-6 pt-6 border-t border-[#2a1d17]/12">
+                    <p class="text-[16px] text-[#2a1d17] leading-relaxed whitespace-pre-line">{{ $report->isi_laporan }}</p>
 
                     @if ($report->tanggal_kejadian || $report->lokasi_kejadian)
-                        <div class="mt-4 flex flex-wrap gap-4 text-xs text-stone-600 bg-stone-50 rounded-lg px-3.5 py-2.5 border border-stone-100">
+                        <div class="mt-5 flex flex-wrap gap-5 text-[14px] text-[#65564c] bg-[#e5e1d8]/65 rounded-[8px] px-4 py-3">
                             @if ($report->tanggal_kejadian)
-                                <span><strong class="text-stone-800">Tanggal:</strong> {{ $report->tanggal_kejadian->format('d M Y') }}</span>
+                                <span><strong class="text-[#2a1d17] font-medium">Tanggal:</strong> {{ $report->tanggal_kejadian->format('d M Y') }}</span>
                             @endif
                             @if ($report->lokasi_kejadian)
-                                <span><strong class="text-stone-800">Lokasi:</strong> {{ $report->lokasi_kejadian }}</span>
+                                <span><strong class="text-[#2a1d17] font-medium">Lokasi:</strong> {{ $report->lokasi_kejadian }}</span>
                             @endif
                         </div>
                     @endif
 
                     @if ($report->attachment_path)
-                        <div class="mt-4">
+                        <div class="mt-5">
                             @if ($report->isAttachmentImage())
                                 <a href="{{ asset('storage/' . $report->attachment_path) }}" target="_blank" class="inline-block">
-                                    <img src="{{ asset('storage/' . $report->attachment_path) }}" alt="Lampiran Bukti" class="max-h-60 rounded-lg border border-stone-200">
+                                    <img src="{{ asset('storage/' . $report->attachment_path) }}" alt="Lampiran Bukti" class="max-h-64 rounded-[8px] border border-[#2a1d17]/15">
                                 </a>
                             @else
-                                <a href="{{ asset('storage/' . $report->attachment_path) }}" target="_blank" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-stone-100 text-stone-800 text-xs font-medium hover:bg-stone-200">
-                                    Unduh Lampiran ({{ $report->attachment_name ?? 'Berkas' }})
+                                <a href="{{ asset('storage/' . $report->attachment_path) }}" target="_blank" class="s-btn-secondary h-[40px] text-[14px]">
+                                    Unduh lampiran ({{ $report->attachment_name ?? 'Berkas' }})
                                 </a>
                             @endif
                         </div>
@@ -113,54 +112,54 @@
             </div>
 
             {{-- Timeline --}}
-            <div class="mt-5 bg-white rounded-xl border border-stone-200 p-6">
-                <h3 class="text-sm font-semibold text-stone-950">Riwayat Tindak Lanjut</h3>
+            <div class="mt-6 s-card p-6 sm:p-8">
+                <h3 class="text-[18px] font-medium text-[#2a1d17]">Riwayat tindak lanjut</h3>
 
-                <div class="mt-4 space-y-3">
+                <div class="mt-5 divide-y divide-[#2a1d17]/12">
                     @forelse ($report->publicResponses as $res)
-                        <div class="rounded-lg border p-4 {{ $res->sender_type === 'admin' ? 'border-emerald-200/80 bg-emerald-50/30' : 'border-stone-200 bg-stone-50/50' }}">
-                            <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-                                <div class="flex items-center gap-2">
-                                    <span class="font-semibold text-stone-900">{{ $res->sender_name }}</span>
-                                    <span class="text-[11px] px-1.5 py-0.5 rounded bg-white border border-stone-200 text-stone-600">
+                        <div class="py-4 first:pt-0">
+                            <div class="flex flex-wrap items-center justify-between gap-2 text-[13px]">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="font-medium text-[#2a1d17]">{{ $res->sender_name }}</span>
+                                    <span class="px-2 py-0.5 rounded-[6px] bg-[#e5e1d8] text-[#65564c]">
                                         {{ $res->sender_type === 'admin' ? 'Admin DPM' : ($res->sender_type === 'reporter' ? 'Pelapor' : 'Sistem') }}
                                     </span>
                                     @if ($res->status_to)
-                                        <span class="text-[11px] font-medium text-emerald-900">&rarr; {{ \App\Models\Report::STATUSES[$res->status_to] ?? $res->status_to }}</span>
+                                        <span class="font-medium text-[#456f3a]">&rarr; {{ \App\Models\Report::STATUSES[$res->status_to] ?? $res->status_to }}</span>
                                     @endif
                                 </div>
-                                <time class="font-mono text-[11px] text-stone-500">{{ $res->created_at->format('d M Y, H:i') }}</time>
+                                <time class="font-mono text-[#65564c]">{{ $res->created_at->format('d M Y, H:i') }}</time>
                             </div>
-                            <p class="mt-2 text-sm text-stone-800 leading-relaxed whitespace-pre-line">{{ $res->message }}</p>
+                            <p class="mt-2 text-[15px] text-[#2a1d17] leading-relaxed whitespace-pre-line">{{ $res->message }}</p>
                             @if ($res->attachment_path)
-                                <a href="{{ asset('storage/' . $res->attachment_path) }}" target="_blank" class="mt-2 inline-block text-xs font-medium text-emerald-900 hover:underline">
+                                <a href="{{ asset('storage/' . $res->attachment_path) }}" target="_blank" class="mt-2 inline-block text-[14px] font-medium text-[#456f3a] hover:underline">
                                     Lampiran: {{ $res->attachment_name ?? 'Berkas' }}
                                 </a>
                             @endif
                         </div>
                     @empty
-                        <p class="text-xs text-stone-500">Belum ada riwayat tindak lanjut.</p>
+                        <p class="text-[15px] text-[#65564c]">Belum ada riwayat tindak lanjut.</p>
                     @endforelse
                 </div>
 
                 @if ($report->canReporterReply())
-                    <form action="{{ route('tracking.reply', $report->ticket_code) }}" method="POST" enctype="multipart/form-data" class="mt-6 pt-5 border-t border-stone-200 space-y-3">
+                    <form action="{{ route('tracking.reply', $report->ticket_code) }}" method="POST" enctype="multipart/form-data" class="mt-6 pt-6 border-t border-[#2a1d17]/15 space-y-3.5">
                         @csrf
-                        <label class="block text-xs font-semibold text-stone-800">Tambah Tanggapan atau Bukti</label>
-                        <textarea name="message" rows="3" required placeholder="Tulis klarifikasi atau informasi tambahan..." class="w-full px-3 py-2 rounded-lg border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-900/15 focus:border-emerald-800">{{ old('message') }}</textarea>
+                        <label class="block text-[14px] font-medium text-[#2a1d17]">Tambah tanggapan atau bukti</label>
+                        <textarea name="message" rows="3" required placeholder="Tulis klarifikasi atau informasi tambahan..." class="s-input min-h-[100px] py-3">{{ old('message') }}</textarea>
                         @error('message')
-                            <p class="text-xs text-rose-600">{{ $message }}</p>
+                            <p class="text-[13px] text-[#7a2824]">{{ $message }}</p>
                         @enderror
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <input type="file" name="attachment" accept=".jpg,.jpeg,.png,.webp,.pdf" class="text-xs text-stone-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border file:border-stone-200 file:text-xs file:font-medium file:bg-white file:text-stone-700 hover:file:bg-stone-50 cursor-pointer">
-                            <button type="submit" class="btn-press px-4 py-2 rounded-lg bg-stone-900 text-white text-xs font-semibold hover:bg-stone-800 cursor-pointer">
-                                Kirim Tanggapan
+                            <input type="file" name="attachment" accept=".jpg,.jpeg,.png,.webp,.pdf" class="text-[13px] text-[#65564c] file:mr-3 file:py-2 file:px-3 file:rounded-[6px] file:border file:border-[#2a1d17]/20 file:text-[13px] file:font-medium file:bg-white file:text-[#2a1d17] cursor-pointer">
+                            <button type="submit" class="s-btn-primary">
+                                Kirim tanggapan
                             </button>
                         </div>
                     </form>
                 @else
-                    <p class="mt-5 pt-4 border-t border-stone-100 text-xs text-stone-500">
-                        Tiket ini berstatus <strong>{{ $report->status_label }}</strong> dan ditutup dari tanggapan baru.
+                    <p class="mt-5 pt-4 border-t border-[#2a1d17]/12 text-[14px] text-[#65564c]">
+                        Tiket ini berstatus <strong class="text-[#2a1d17] font-medium">{{ $report->status_label }}</strong> dan ditutup dari tanggapan baru.
                     </p>
                 @endif
             </div>

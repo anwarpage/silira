@@ -1,14 +1,14 @@
 @extends('layouts.admin')
 
-@section('title', 'Akun Pengurus — Admin SILIRA')
+@section('title', 'Akun pengurus — Silira')
 
 @section('content')
-    <h1 class="text-xl font-bold tracking-[-0.02em] text-stone-950">Akun Pengurus DPM</h1>
-    <p class="text-xs text-stone-500 mt-0.5">Kelola akses admin dan perbarui kata sandi akun Anda.</p>
+    <h1 class="text-[28px] font-medium text-[#2a1d17]">Akun pengurus DPM</h1>
+    <p class="text-[15px] text-[#65564c] mt-1">Kelola akses admin dan perbarui kata sandi akun Anda.</p>
 
     @if ($errors->any())
-        <div class="mt-4 rounded-lg bg-rose-50 border border-rose-200 p-4 text-xs text-rose-900">
-            <ul class="list-disc list-inside space-y-0.5">
+        <div class="mt-5 rounded-[8px] bg-[#eedcdb] border border-[#9b3a34]/30 p-4 text-[14px] text-[#7a2824]">
+            <ul class="list-disc list-inside space-y-1">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -16,14 +16,14 @@
         </div>
     @endif
 
-    <div class="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div class="bg-white rounded-xl border border-stone-200 p-5">
-            <h2 class="text-xs font-semibold text-stone-950">Tambah Pengurus</h2>
-            <form action="{{ route('admin.users.store') }}" method="POST" class="mt-3.5 space-y-3">
+    <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="s-card p-6">
+            <h2 class="text-[16px] font-medium text-[#2a1d17]">Tambah pengurus</h2>
+            <form action="{{ route('admin.users.store') }}" method="POST" class="mt-4 space-y-3.5">
                 @csrf
-                <input type="text" name="name" required placeholder="Nama Lengkap" class="w-full px-3 py-2 rounded-lg border border-stone-300 text-sm focus:outline-none focus:border-emerald-800">
-                <input type="email" name="email" required placeholder="Email (mis. komisi2@silira.ac.id)" class="w-full px-3 py-2 rounded-lg border border-stone-300 text-sm focus:outline-none focus:border-emerald-800">
-                <input type="text" name="jabatan" placeholder="Jabatan / Komisi (opsional)" class="w-full px-3 py-2 rounded-lg border border-stone-300 text-sm focus:outline-none focus:border-emerald-800">
+                <input type="text" name="name" required placeholder="Nama lengkap" class="s-input">
+                <input type="email" name="email" required placeholder="Email (mis. komisi2@silira.ac.id)" class="s-input">
+                <input type="text" name="jabatan" placeholder="Jabatan / komisi (opsional)" class="s-input">
                 <x-select-dropdown
                     name="role"
                     :options="[
@@ -32,57 +32,57 @@
                     ]"
                     selected="admin_dpm"
                 />
-                <div class="grid grid-cols-2 gap-2.5">
-                    <input type="password" name="password" required placeholder="Password (min 8)" class="w-full px-3 py-2 rounded-lg border border-stone-300 text-sm focus:outline-none focus:border-emerald-800">
-                    <input type="password" name="password_confirmation" required placeholder="Konfirmasi" class="w-full px-3 py-2 rounded-lg border border-stone-300 text-sm focus:outline-none focus:border-emerald-800">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="password" name="password" required placeholder="Password (min 8)" class="s-input">
+                    <input type="password" name="password_confirmation" required placeholder="Konfirmasi" class="s-input">
                 </div>
-                <button type="submit" class="btn-press w-full py-2 rounded-lg bg-emerald-900 text-white text-xs font-semibold hover:bg-emerald-950 cursor-pointer">Tambah Pengurus</button>
+                <button type="submit" class="s-btn-primary w-full">Tambah pengurus</button>
             </form>
         </div>
 
-        <div class="bg-white rounded-xl border border-stone-200 p-5">
-            <h2 class="text-xs font-semibold text-stone-950">Ubah Kata Sandi Saya</h2>
-            <form action="{{ route('admin.users.password') }}" method="POST" class="mt-3.5 space-y-3">
+        <div class="s-card p-6">
+            <h2 class="text-[16px] font-medium text-[#2a1d17]">Ubah kata sandi saya</h2>
+            <form action="{{ route('admin.users.password') }}" method="POST" class="mt-4 space-y-3.5">
                 @csrf
                 @method('PUT')
-                <input type="password" name="current_password" required placeholder="Kata Sandi Saat Ini" class="w-full px-3 py-2 rounded-lg border border-stone-300 text-sm focus:outline-none focus:border-emerald-800">
-                <input type="password" name="password" required placeholder="Kata Sandi Baru (min 8 karakter)" class="w-full px-3 py-2 rounded-lg border border-stone-300 text-sm focus:outline-none focus:border-emerald-800">
-                <input type="password" name="password_confirmation" required placeholder="Konfirmasi Kata Sandi Baru" class="w-full px-3 py-2 rounded-lg border border-stone-300 text-sm focus:outline-none focus:border-emerald-800">
-                <button type="submit" class="btn-press w-full py-2 rounded-lg bg-stone-900 text-white text-xs font-semibold hover:bg-stone-800 cursor-pointer">Perbarui Kata Sandi</button>
+                <input type="password" name="current_password" required placeholder="Kata sandi saat ini" class="s-input">
+                <input type="password" name="password" required placeholder="Kata sandi baru (min 8 karakter)" class="s-input">
+                <input type="password" name="password_confirmation" required placeholder="Konfirmasi kata sandi baru" class="s-input">
+                <button type="submit" class="s-btn-secondary w-full h-[44px]">Perbarui kata sandi</button>
             </form>
         </div>
     </div>
 
-    <div class="mt-5 bg-white rounded-xl border border-stone-200 overflow-hidden">
-        <table class="w-full text-left text-xs">
-            <thead class="bg-stone-50 text-[11px] font-medium text-stone-500 border-b border-stone-200">
+    <div class="mt-6 s-card overflow-hidden">
+        <table class="w-full text-left text-[14px]">
+            <thead class="bg-[#e5e1d8]/60 text-[13px] font-medium text-[#65564c] border-b border-[#2a1d17]/12">
                 <tr>
-                    <th class="px-5 py-2.5">Nama &amp; Jabatan</th>
-                    <th class="px-5 py-2.5">Email</th>
-                    <th class="px-5 py-2.5">Peran</th>
-                    <th class="px-5 py-2.5 text-right">Aksi</th>
+                    <th class="px-5 py-3">Nama &amp; jabatan</th>
+                    <th class="px-5 py-3">Email</th>
+                    <th class="px-5 py-3">Peran</th>
+                    <th class="px-5 py-3 text-right">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-stone-100">
+            <tbody class="divide-y divide-[#2a1d17]/10">
                 @foreach ($users as $u)
                     <tr>
-                        <td class="px-5 py-3">
-                            <p class="font-semibold text-stone-900">{{ $u->name }}</p>
-                            <p class="text-[11px] text-stone-500">{{ $u->jabatan ?? '-' }}</p>
+                        <td class="px-5 py-3.5">
+                            <p class="font-medium text-[#2a1d17]">{{ $u->name }}</p>
+                            <p class="text-[13px] text-[#65564c]">{{ $u->jabatan ?? '-' }}</p>
                         </td>
-                        <td class="px-5 py-3 font-mono text-stone-700">{{ $u->email }}</td>
-                        <td class="px-5 py-3">
-                            <span class="px-2 py-0.5 rounded-md bg-stone-100 text-stone-700 font-medium">{{ $u->role }}</span>
+                        <td class="px-5 py-3.5 font-mono text-[13px] text-[#2a1d17]">{{ $u->email }}</td>
+                        <td class="px-5 py-3.5">
+                            <span class="px-2.5 py-0.5 rounded-[6px] text-[13px] bg-[#dad5ca] text-[#2a1d17]">{{ $u->role }}</span>
                         </td>
-                        <td class="px-5 py-3 text-right">
+                        <td class="px-5 py-3.5 text-right">
                             @if ($u->id !== auth()->id())
                                 <form action="{{ route('admin.users.destroy', $u) }}" method="POST" onsubmit="return confirm('Hapus akun pengurus ini?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="px-2.5 py-1 rounded-md text-rose-700 hover:bg-rose-50 cursor-pointer">Hapus</button>
+                                    <button type="submit" class="px-2.5 py-1.5 rounded-[6px] text-[13px] font-medium text-[#7a2824] hover:bg-[#eedcdb] cursor-pointer">Hapus</button>
                                 </form>
                             @else
-                                <span class="text-stone-400">Aktif</span>
+                                <span class="text-[13px] text-[#65564c]">Aktif</span>
                             @endif
                         </td>
                     </tr>

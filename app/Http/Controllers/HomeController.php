@@ -20,11 +20,11 @@ class HomeController extends Controller
 
         $categories = Category::where('is_active', true)->orderBy('name')->get();
 
-        $publicReports = Report::with('category')
+        $publicReports = Report::with(['category', 'publicResponses'])
             ->withCount(['publicResponses'])
             ->visiblePublicly()
             ->latest()
-            ->take(6)
+            ->take(5)
             ->get();
 
         return view('public.home', compact('stats', 'categories', 'publicReports'));

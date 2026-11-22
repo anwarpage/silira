@@ -2,94 +2,93 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin — SILIRA')</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>@yield('title', 'Admin — Silira')</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700|jetbrains-mono:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400..600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-[#F7F7F5] text-stone-900 antialiased min-h-screen flex">
+<body class="min-h-screen flex bg-[#e5e1d8] text-[#2a1d17]">
     @php
         $pendingCount = \App\Models\Report::where('status', 'menunggu')->count();
     @endphp
 
-    {{-- Clean Light Workspace Sidebar --}}
-    <aside class="hidden lg:flex lg:flex-col w-60 bg-white border-r border-stone-200 shrink-0">
-        <div class="h-14 px-5 flex items-center border-b border-stone-200">
-            <a href="{{ route('admin.dashboard') }}" class="hover:opacity-85 transition">
-                <x-brand-logo size="sm" subtitle="Admin DPM" />
+    {{-- Sidebar on --p-surface (#dad5ca) --}}
+    <aside class="hidden lg:flex lg:flex-col w-64 bg-[#dad5ca] border-r border-[#2a1d17]/13 shrink-0">
+        <div class="h-[72px] px-6 flex items-center justify-between border-b border-[#2a1d17]/12">
+            <a href="{{ route('admin.dashboard') }}" class="hover:opacity-80 transition">
+                <x-brand-logo />
             </a>
+            <span class="text-[13px] text-[#65564c]">Admin</span>
         </div>
 
-        <nav class="flex-1 p-3 space-y-0.5 text-[13px] font-medium">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center justify-between px-3 py-2 rounded-lg transition {{ request()->routeIs('admin.dashboard') ? 'bg-stone-900 text-white font-semibold' : 'text-stone-600 hover:bg-stone-100 hover:text-stone-950' }}">
+        <nav class="flex-1 p-4 space-y-1 text-[15px] font-medium">
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-[8px] transition {{ request()->routeIs('admin.dashboard') ? 'bg-[#2a1d17] text-[#e5e1d8]' : 'text-[#2a1d17]/80 hover:bg-[#2a1d17]/6 hover:text-[#2a1d17]' }}">
                 <span>Dashboard</span>
             </a>
 
-            <a href="{{ route('admin.reports.index') }}" class="flex items-center justify-between px-3 py-2 rounded-lg transition {{ request()->routeIs('admin.reports.*') ? 'bg-stone-900 text-white font-semibold' : 'text-stone-600 hover:bg-stone-100 hover:text-stone-950' }}">
-                <span>Laporan Masuk</span>
+            <a href="{{ route('admin.reports.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-[8px] transition {{ request()->routeIs('admin.reports.*') ? 'bg-[#2a1d17] text-[#e5e1d8]' : 'text-[#2a1d17]/80 hover:bg-[#2a1d17]/6 hover:text-[#2a1d17]' }}">
+                <span>Laporan masuk</span>
                 @if ($pendingCount > 0)
-                    <span class="font-mono text-[11px] font-semibold px-1.5 py-0.5 rounded {{ request()->routeIs('admin.reports.*') ? 'bg-white/20 text-white' : 'bg-amber-100 text-amber-900' }}">{{ $pendingCount }}</span>
+                    <span class="font-mono text-[13px] px-2 py-0.5 rounded-[6px] {{ request()->routeIs('admin.reports.*') ? 'bg-[#456f3a] text-white' : 'bg-[#efe6d0] text-[#6d4c14]' }}">{{ $pendingCount }}</span>
                 @endif
             </a>
 
-            <div class="pt-4 pb-1 px-3 text-[10px] font-semibold uppercase tracking-wider text-stone-400">Kelola</div>
-
-            <a href="{{ route('admin.categories.index') }}" class="flex items-center justify-between px-3 py-2 rounded-lg transition {{ request()->routeIs('admin.categories.*') ? 'bg-stone-900 text-white font-semibold' : 'text-stone-600 hover:bg-stone-100 hover:text-stone-950' }}">
-                <span>Kategori Bidang</span>
+            <a href="{{ route('admin.categories.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-[8px] transition {{ request()->routeIs('admin.categories.*') ? 'bg-[#2a1d17] text-[#e5e1d8]' : 'text-[#2a1d17]/80 hover:bg-[#2a1d17]/6 hover:text-[#2a1d17]' }}">
+                <span>Kategori bidang</span>
             </a>
 
-            <a href="{{ route('admin.users.index') }}" class="flex items-center justify-between px-3 py-2 rounded-lg transition {{ request()->routeIs('admin.users.*') ? 'bg-stone-900 text-white font-semibold' : 'text-stone-600 hover:bg-stone-100 hover:text-stone-950' }}">
-                <span>Akun Pengurus</span>
+            <a href="{{ route('admin.users.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-[8px] transition {{ request()->routeIs('admin.users.*') ? 'bg-[#2a1d17] text-[#e5e1d8]' : 'text-[#2a1d17]/80 hover:bg-[#2a1d17]/6 hover:text-[#2a1d17]' }}">
+                <span>Akun pengurus</span>
             </a>
 
-            <div class="pt-4 mt-4 border-t border-stone-100">
-                <a href="{{ route('home') }}" target="_blank" class="flex items-center justify-between px-3 py-2 rounded-lg text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition text-xs">
-                    <span>Portal Publik</span>
+            <div class="pt-4 mt-4 border-t border-[#2a1d17]/12">
+                <a href="{{ route('home') }}" target="_blank" class="flex items-center justify-between px-3.5 py-2 rounded-[8px] text-[14px] text-[#65564c] hover:bg-[#2a1d17]/6 hover:text-[#2a1d17] transition">
+                    <span>Portal publik</span>
                     <span>&nearr;</span>
                 </a>
             </div>
         </nav>
 
-        <div class="p-3.5 border-t border-stone-200 bg-stone-50/60">
-            <p class="text-xs font-semibold text-stone-900 truncate">{{ auth()->user()->name }}</p>
-            <p class="text-[11px] text-stone-500 truncate">{{ auth()->user()->jabatan ?? auth()->user()->email }}</p>
-            <form action="{{ route('admin.logout') }}" method="POST" class="mt-2.5">
+        <div class="p-4 border-t border-[#2a1d17]/12">
+            <p class="text-[14px] font-medium text-[#2a1d17] truncate">{{ auth()->user()->name }}</p>
+            <p class="text-[13px] text-[#65564c] truncate">{{ auth()->user()->jabatan ?? auth()->user()->email }}</p>
+            <form action="{{ route('admin.logout') }}" method="POST" class="mt-3">
                 @csrf
-                <button type="submit" class="btn-press w-full px-3 py-1.5 rounded-lg border border-stone-300 bg-white text-stone-700 hover:bg-stone-100 text-xs font-medium cursor-pointer">
+                <button type="submit" class="s-btn-secondary w-full h-[40px] text-[14px]">
                     Keluar
                 </button>
             </form>
         </div>
     </aside>
 
-    {{-- Main Wrapper --}}
     <div class="flex-1 flex flex-col min-w-0">
-        <header class="lg:hidden bg-white border-b border-stone-200 px-4 py-3 flex items-center justify-between">
+        <header class="lg:hidden bg-[#dad5ca] border-b border-[#2a1d17]/13 px-5 py-3 flex items-center justify-between">
             <a href="{{ route('admin.dashboard') }}">
                 <x-brand-logo size="sm" />
             </a>
-            <div class="flex items-center gap-3 text-xs font-medium text-stone-700">
+            <div class="flex items-center gap-4 text-[14px] font-medium">
                 <a href="{{ route('admin.dashboard') }}">Dashboard</a>
                 <a href="{{ route('admin.reports.index') }}">Laporan</a>
                 <a href="{{ route('admin.categories.index') }}">Kategori</a>
                 <form action="{{ route('admin.logout') }}" method="POST" class="inline">
                     @csrf
-                    <button type="submit" class="text-rose-700 font-semibold">Keluar</button>
+                    <button type="submit" class="text-[#7a2824]">Keluar</button>
                 </form>
             </div>
         </header>
 
-        <main class="flex-1 p-5 sm:p-8 max-w-6xl w-full mx-auto">
+        <main class="flex-1 p-6 sm:p-10 max-w-6xl w-full mx-auto">
             @if (session('success'))
-                <div class="mb-5 rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-3 text-xs font-medium text-emerald-900">
+                <div class="mb-6 rounded-[10px] bg-[#d9e7d6] border border-[#456f3a]/30 px-4 py-3 text-[14px] font-medium text-[#284b20]">
                     {{ session('success') }}
                 </div>
             @endif
 
             @if (session('error'))
-                <div class="mb-5 rounded-lg bg-rose-50 border border-rose-200 px-4 py-3 text-xs font-medium text-rose-900">
+                <div class="mb-6 rounded-[10px] bg-[#eedcdb] border border-[#9b3a34]/30 px-4 py-3 text-[14px] font-medium text-[#7a2824]">
                     {{ session('error') }}
                 </div>
             @endif
