@@ -13,7 +13,7 @@
   </p>
 
   <p>
-    <img src="https://img.shields.io/badge/PHP-8.2%2B-0F172A?style=flat-square" alt="PHP 8.2+" />
+    <img src="https://img.shields.io/badge/PHP-8.3%2B-0F172A?style=flat-square" alt="PHP 8.3+" />
     <img src="https://img.shields.io/badge/Laravel-13-1E3A8A?style=flat-square" alt="Laravel 13" />
     <img src="https://img.shields.io/badge/Tailwind_CSS-4-0F172A?style=flat-square" alt="Tailwind CSS 4" />
     <img src="https://img.shields.io/badge/License-MIT-475569?style=flat-square" alt="MIT License" />
@@ -185,7 +185,8 @@ erDiagram
 ## Instalasi Lokal
 
 ### Prasyarat
-- PHP 8.2+ (ekstensi `pdo_sqlite` / `pdo_mysql`, `fileinfo`, `mbstring`, `gd`)
+- PHP 8.3+ (ekstensi `pdo_mysql`, `fileinfo`, `mbstring`, `gd`)
+- MySQL 8.0+
 - Composer 2+
 - Node.js 20+ & npm
 
@@ -199,18 +200,9 @@ npm install
 
 cp .env.example .env
 php artisan key:generate
-
-php artisan migrate --seed
-php artisan storage:link
-
-npm run build
-php artisan serve
 ```
 
-Aplikasi berjalan di `http://127.0.0.1:8000`.
-
-### Konfigurasi MySQL (Opsional)
-Secara default pengembangan lokal menggunakan SQLite (`database/database.sqlite`). Untuk menggunakan MySQL, sesuaikan `.env`:
+Buat database `silira_db` di MySQL (dan `silira_test` untuk pengujian otomatis), sesuaikan kredensial MySQL di `.env`:
 
 ```env
 DB_CONNECTION=mysql
@@ -221,7 +213,17 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Lalu jalankan `php artisan migrate --seed`.
+Lalu jalankan migrasi, seeder, symlink storage, dan build aset:
+
+```bash
+php artisan migrate --seed
+php artisan storage:link
+
+npm run build
+php artisan serve
+```
+
+Aplikasi berjalan di `http://127.0.0.1:8000`.
 
 ---
 
@@ -235,6 +237,8 @@ Lalu jalankan `php artisan migrate --seed`.
 | Admin DPM (Sekretariat) | `sekretariat@silira.ac.id` | `password123` |
 
 ### Contoh Kode Tiket (`/lacak`)
+
+PIN akses demo untuk seluruh tiket seeder: **`FDIK26`** (digunakan untuk membuka tiket Rahasia dan mengirim tanggapan 2 arah).
 
 | Kode Tiket | Klasifikasi | Privasi | Status |
 | :--- | :--- | :--- | :--- |

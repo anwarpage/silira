@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Aspirasi publik — Silira')
+@section('title', 'Direktori Aspirasi Publik — SILIRA')
 
 @section('content')
     @php
@@ -16,8 +16,8 @@
             'menunggu' => 'bg-[#d97706]',
             'diverifikasi' => 'bg-[#0284c7]',
             'diproses' => 'bg-[#1e3a8a]',
-            'selesai' => 'bg-[#1e3a8a]',
-            'ditolak' => 'bg-[#dc2626]',
+            'selesai' => 'bg-[#16a34a]',
+            'ditolak' => 'bg-[#b91c1c]',
         ];
         $statusOptions = collect([['value' => '', 'label' => 'Semua status']])
             ->merge(collect(\App\Models\Report::STATUSES)->map(fn ($label, $key) => [
@@ -28,66 +28,92 @@
             ->all();
     @endphp
 
-    <div class="max-w-[1200px] mx-auto px-6 sm:px-10 py-12">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div>
-                <h1 class="text-[32px] font-medium leading-tight text-[#0f172a]">Aspirasi publik</h1>
-                <p class="mt-1.5 text-[15px] text-[#475569]">Menampilkan laporan Publik dan Anonim. Laporan Rahasia tidak dipublikasikan.</p>
-            </div>
-            <a href="{{ route('reports.create') }}" class="s-btn-primary">
-                Kirim aspirasi
-            </a>
-        </div>
+    {{-- Institutional Page Header Band --}}
+    <div class="bg-white border-b border-[#e5e7eb]">
+        <div class="max-w-[1180px] mx-auto px-5 sm:px-8 py-9">
+            <nav aria-label="Breadcrumb" class="text-[13px] text-[#475569] mb-3">
+                <a href="{{ route('home') }}" class="hover:text-[#1e3a8a] transition">Beranda</a>
+                <span class="mx-2 text-[#d0d7de]" aria-hidden="true">/</span>
+                <span class="text-[#0f172a] font-medium">Direktori Aspirasi</span>
+            </nav>
 
-        <form method="GET" action="{{ route('public.feed') }}" class="mt-7 s-card p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
-            <div class="lg:col-span-4">
-                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari judul, isi, atau kode tiket..." class="s-input s-input-sm">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <h1 class="text-[30px] sm:text-[36px] font-semibold leading-tight text-[#0f172a]">
+                        Direktori Aspirasi Publik
+                    </h1>
+                    <p class="mt-2 text-[15.5px] text-[#475569]">
+                        Register terbuka laporan berstatus Publik dan Anonim. Laporan berstatus Rahasia tidak dipublikasikan.
+                    </p>
+                </div>
+                <a href="{{ route('tracking.index') }}" class="s-btn-secondary h-[42px] px-4 text-[14px] shrink-0">
+                    Lacak Tiket Saya &rarr;
+                </a>
             </div>
-            <div class="lg:col-span-3">
-                <x-select-dropdown name="category_id" :options="$categoryOptions" :selected="request('category_id')" placeholder="Semua kategori" size="sm" :searchable="true" />
+        </div>
+    </div>
+
+    <div class="max-w-[1180px] mx-auto px-5 sm:px-8 py-9">
+        <form method="GET" action="{{ route('public.feed') }}" class="s-card p-5 space-y-3.5">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex-1 min-w-0">
+                    <label for="feed_q" class="sr-only">Kata kunci pencarian</label>
+                    <input type="text" id="feed_q" name="q" value="{{ request('q') }}" placeholder="Cari judul, uraian, atau nomor tiket..." class="s-input s-input-sm">
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button type="submit" class="s-btn-primary h-[40px] px-5 text-[14px]">Cari Berkas</button>
+                    @if (request()->hasAny(['q', 'category_id', 'jenis', 'status']))
+                        <a href="{{ route('public.feed') }}" class="s-btn-secondary h-[40px] px-3.5 text-[14px]">Reset</a>
+                    @endif
+                </div>
             </div>
-            <div class="lg:col-span-2">
-                <x-select-dropdown name="jenis" :options="$jenisOptions" :selected="request('jenis')" placeholder="Semua klasifikasi" size="sm" />
-            </div>
-            <div class="lg:col-span-2">
-                <x-select-dropdown name="status" :options="$statusOptions" :selected="request('status')" placeholder="Semua status" size="sm" />
-            </div>
-            <div class="lg:col-span-1 flex gap-1.5">
-                <button type="submit" class="s-btn-primary flex-1 h-[42px] px-3 text-[14px]">Cari</button>
-                @if (request()->hasAny(['q', 'category_id', 'jenis', 'status']))
-                    <a href="{{ route('public.feed') }}" title="Reset" class="s-btn-secondary h-[42px] px-3">&times;</a>
-                @endif
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <x-select-dropdown name="category_id" :options="$categoryOptions" :selected="request('category_id')" placeholder="Semua kategori" size="sm" :searchable="true" />
+                </div>
+                <div>
+                    <x-select-dropdown name="jenis" :options="$jenisOptions" :selected="request('jenis')" placeholder="Semua klasifikasi" size="sm" />
+                </div>
+                <div>
+                    <x-select-dropdown name="status" :options="$statusOptions" :selected="request('status')" placeholder="Semua status" size="sm" />
+                </div>
             </div>
         </form>
 
-        <div class="mt-6 divide-y divide-[#0f172a]/13 border-t border-b border-[#0f172a]/13">
-            @forelse ($reports as $item)
-                <a href="{{ route('tracking.show', $item->ticket_code) }}" class="block py-5 px-3 -mx-3 rounded-[8px] hover:bg-[#eceff4]/50 transition">
-                    <div class="flex flex-wrap items-center justify-between gap-2 text-[13px]">
-                        <div class="flex flex-wrap items-center gap-2.5">
-                            <span class="font-mono text-[#475569]">{{ $item->ticket_code }}</span>
-                            <span class="px-2.5 py-0.5 rounded-[6px] font-medium {{ $item->status_badge_class }}">{{ $item->status_label }}</span>
-                            <span class="text-[#475569]">{{ $item->jenis_laporan }}</span>
-                            @if ($item->category)
-                                <span class="text-[#475569]">&middot; {{ $item->category->name }}</span>
-                            @endif
+        <div class="mt-6 s-card overflow-hidden">
+            <div class="divide-y divide-[#e5e7eb]">
+                @forelse ($reports as $item)
+                    <a href="{{ route('public.aspirations.show', $item->ticket_code) }}" class="group block px-6 py-5 hover:bg-[#f8fafc] transition border-l-2 border-l-transparent hover:border-l-[#1e3a8a]">
+                        <div class="flex flex-wrap items-center justify-between gap-2 text-[13px]">
+                            <div class="flex flex-wrap items-center gap-2.5">
+                                <span class="font-mono font-medium text-[#0f172a]">{{ $item->ticket_code }}</span>
+                                <span class="px-2.5 py-0.5 rounded-[6px] font-medium {{ $item->status_badge_class }}">{{ $item->status_label }}</span>
+                                <span class="text-[#475569]">{{ $item->jenis_laporan }}</span>
+                                @if ($item->category)
+                                    <span class="text-[#475569]">&middot; {{ $item->category->name }}</span>
+                                @endif
+                            </div>
+                            <time class="font-mono text-[#475569]">{{ $item->created_at->format('d M Y') }}</time>
                         </div>
-                        <span class="font-mono text-[#475569]">{{ $item->created_at->format('d M Y') }}</span>
-                    </div>
 
-                    <h2 class="mt-2 text-[18px] font-medium text-[#0f172a]">{{ $item->judul_laporan }}</h2>
-                    <p class="mt-1.5 text-[15px] text-[#475569] leading-relaxed">{{ \Illuminate\Support\Str::limit($item->isi_laporan, 220) }}</p>
+                        <h2 class="mt-2 font-sans text-[18px] font-semibold text-[#0f172a] group-hover:text-[#1e3a8a] transition break-words [overflow-wrap:anywhere]">
+                            {{ $item->judul_laporan }}
+                        </h2>
+                        <p class="mt-1.5 text-[15px] text-[#475569] leading-relaxed break-words [overflow-wrap:anywhere]">
+                            {{ \Illuminate\Support\Str::limit($item->isi_laporan, 220) }}
+                        </p>
 
-                    <div class="mt-3 flex items-center justify-between text-[13px] text-[#475569]">
-                        <span>{{ $item->public_reporter_name }}</span>
-                        <span class="font-medium text-[#1e3a8a]">{{ $item->public_responses_count }} riwayat progres &rarr;</span>
+                        <div class="mt-3 flex items-center justify-between text-[13px] text-[#475569]">
+                            <span>Pelapor: <strong class="font-medium text-[#0f172a]">{{ $item->public_reporter_name }}</strong></span>
+                            <span class="font-medium text-[#1e3a8a]">{{ $item->public_responses_count }} riwayat tindak lanjut &rarr;</span>
+                        </div>
+                    </a>
+                @empty
+                    <div class="px-6 py-14 text-center text-[15px] text-[#475569]">
+                        Tidak ada laporan publik yang cocok dengan filter pencarian.
                     </div>
-                </a>
-            @empty
-                <div class="py-12 text-center text-[15px] text-[#475569]">
-                    Tidak ada laporan publik yang cocok dengan filter pencarian.
-                </div>
-            @endforelse
+                @endforelse
+            </div>
         </div>
 
         <div class="mt-6">

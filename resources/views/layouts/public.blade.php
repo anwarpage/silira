@@ -3,120 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>@yield('title', 'Silira — Portal aspirasi DPM Fakultas Dakwah dan Ilmu Komunikasi')</title>
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Portal layanan aspirasi dan pengaduan civitas DPM Fakultas Dakwah dan Ilmu Komunikasi.">
+    <title>@yield('title', 'Silira — Portal Aspirasi DPM FDIK')</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400..600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen flex flex-col">
-    <header class="no-print sticky top-0 z-40 h-[72px] bg-[#f5f7fa] border-b border-[#0f172a]/10">
-        <div class="max-w-[1200px] mx-auto px-6 sm:px-10 h-full flex items-center justify-between gap-6">
-            <a href="{{ route('home') }}" class="hover:opacity-80 transition">
+<body class="min-h-screen flex flex-col bg-white text-[#0f172a]">
+    <a href="#konten-utama" class="skip-link">Langsung ke konten utama</a>
+
+    {{-- Crisp Silicon Valley SaaS Header --}}
+    <header class="no-print sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#0f172a]/8">
+        <div class="max-w-[1180px] mx-auto px-5 sm:px-8 h-[68px] flex items-center justify-between gap-4">
+            <a href="{{ route('home') }}" class="hover:opacity-85 transition shrink-0">
                 <x-brand-logo />
             </a>
 
-            <nav class="hidden md:flex items-center gap-7 text-[15px] font-medium">
-                <a href="{{ route('home') }}" class="py-1 transition {{ request()->routeIs('home') ? 'text-[#0f172a] border-b-2 border-[#0f172a]' : 'text-[#475569] hover:text-[#0f172a]' }}">Beranda</a>
-                <a href="{{ route('public.feed') }}" class="py-1 transition {{ request()->routeIs('public.feed') ? 'text-[#0f172a] border-b-2 border-[#0f172a]' : 'text-[#475569] hover:text-[#0f172a]' }}">Aspirasi</a>
-                <a href="{{ route('tracking.index') }}" class="py-1 transition {{ request()->routeIs('tracking.*') ? 'text-[#0f172a] border-b-2 border-[#0f172a]' : 'text-[#475569] hover:text-[#0f172a]' }}">Lacak</a>
+            <nav aria-label="Navigasi utama" class="hidden md:flex items-center gap-1 text-[14.5px] font-medium">
+                <a
+                    href="{{ route('home') }}"
+                    @if(request()->routeIs('home')) aria-current="page" @endif
+                    class="px-3.5 py-2 rounded-[8px] transition {{ request()->routeIs('home') ? 'bg-[#f8fafc] text-[#0f172a]' : 'text-[#475569] hover:text-[#0f172a] hover:bg-[#f8fafc]/70' }}"
+                >Beranda</a>
+                <a
+                    href="{{ route('public.feed') }}"
+                    @if(request()->routeIs('public.feed', 'public.aspirations.*')) aria-current="page" @endif
+                    class="px-3.5 py-2 rounded-[8px] transition {{ request()->routeIs('public.feed', 'public.aspirations.*') ? 'bg-[#f8fafc] text-[#0f172a]' : 'text-[#475569] hover:text-[#0f172a] hover:bg-[#f8fafc]/70' }}"
+                >Aspirasi</a>
+                <a
+                    href="{{ route('tracking.index') }}"
+                    @if(request()->routeIs('tracking.*')) aria-current="page" @endif
+                    class="px-3.5 py-2 rounded-[8px] transition {{ request()->routeIs('tracking.*') ? 'bg-[#f8fafc] text-[#0f172a]' : 'text-[#475569] hover:text-[#0f172a] hover:bg-[#f8fafc]/70' }}"
+                >Lacak Tiket</a>
                 @auth
-                    <a href="{{ route('admin.dashboard') }}" class="py-1 text-[#475569] hover:text-[#0f172a] transition">Dashboard</a>
-                @else
-                    <a href="{{ route('admin.login') }}" class="py-1 text-[#475569] hover:text-[#0f172a] transition">Admin</a>
+                    <a href="{{ route('admin.dashboard') }}" class="px-3.5 py-2 rounded-[8px] text-[#1e3a8a] hover:bg-[#eff6ff] transition">
+                        Dashboard
+                    </a>
                 @endauth
             </nav>
 
-            <div class="flex items-center gap-3">
-                <a href="{{ route('reports.create') }}" class="s-btn-primary">
-                    Kirim aspirasi
+            <div class="flex items-center gap-2 shrink-0">
+                <a href="{{ route('reports.create') }}" class="s-btn-primary h-[38px] md:h-[40px] px-4 text-[14px] whitespace-nowrap">
+                    Kirim Aspirasi
                 </a>
+
+                <button
+                    type="button"
+                    data-mobile-toggle="publicMobileNav"
+                    aria-controls="publicMobileNav"
+                    aria-expanded="false"
+                    aria-label="Buka menu navigasi"
+                    class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-[9px] border border-[#0f172a]/15 bg-white text-[#0f172a] hover:bg-[#f8fafc] transition cursor-pointer"
+                >
+                    <svg data-icon-open class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                    <svg data-icon-close class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
         </div>
+
+        {{-- Mobile Navigation Drawer --}}
+        <nav id="publicMobileNav" aria-label="Navigasi seluler" class="hidden md:hidden absolute top-full left-0 right-0 z-50 border-t border-b border-[#0f172a]/10 bg-white px-5 py-3 space-y-1 shadow-xl shadow-[#0f172a]/8">
+            <a href="{{ route('home') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-[8px] text-[15px] font-medium transition {{ request()->routeIs('home') ? 'bg-[#0f172a] text-white' : 'text-[#0f172a] hover:bg-[#f8fafc]' }}">
+                <span>Beranda</span>
+            </a>
+            <a href="{{ route('public.feed') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-[8px] text-[15px] font-medium transition {{ request()->routeIs('public.feed', 'public.aspirations.*') ? 'bg-[#0f172a] text-white' : 'text-[#0f172a] hover:bg-[#f8fafc]' }}">
+                <span>Aspirasi Publik</span>
+            </a>
+            <a href="{{ route('tracking.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-[8px] text-[15px] font-medium transition {{ request()->routeIs('tracking.*') ? 'bg-[#0f172a] text-white' : 'text-[#0f172a] hover:bg-[#f8fafc]' }}">
+                <span>Lacak Tiket</span>
+            </a>
+            @auth
+                <div class="pt-2 mt-2 border-t border-[#0f172a]/10">
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-[8px] text-[15px] font-medium text-[#1e3a8a] hover:bg-[#eff6ff] transition">
+                        <span>Dashboard Admin</span>
+                        <span>&rarr;</span>
+                    </a>
+                </div>
+            @endauth
+        </nav>
     </header>
 
-    {{-- Mobile sub-bar --}}
-    <div class="no-print md:hidden bg-[#f5f7fa] border-b border-[#0f172a]/10 px-6 py-2.5 flex items-center gap-5 overflow-x-auto text-[14px] font-medium">
-        <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'text-[#0f172a] underline underline-offset-4' : 'text-[#475569]' }}">Beranda</a>
-        <a href="{{ route('public.feed') }}" class="{{ request()->routeIs('public.feed') ? 'text-[#0f172a] underline underline-offset-4' : 'text-[#475569]' }}">Aspirasi</a>
-        <a href="{{ route('tracking.index') }}" class="{{ request()->routeIs('tracking.*') ? 'text-[#0f172a] underline underline-offset-4' : 'text-[#475569]' }}">Lacak</a>
-        <a href="{{ auth()->check() ? route('admin.dashboard') : route('admin.login') }}" class="text-[#475569]">{{ auth()->check() ? 'Dashboard' : 'Admin' }}</a>
-    </div>
-
-    <main class="flex-1">
+    <main id="konten-utama" class="flex-1">
         @yield('content')
     </main>
 
-    {{-- Closing CTA + Structured Institutional Directory Footer --}}
-    <footer class="no-print bg-[#0f172a] text-[#f8fafc] mt-16">
-        <div class="max-w-[1200px] mx-auto px-6 sm:px-10">
-            {{-- Band 1: Closing Action --}}
-            <div class="py-12 border-b border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                <div class="max-w-xl">
-                    <h2 class="text-[24px] sm:text-[28px] font-medium leading-tight text-white">
-                        Sampaikan aspirasi Anda untuk kemajuan fakultas.
-                    </h2>
-                    <p class="mt-2 text-[15px] text-[#94a3b8]">
-                        Tanpa perlu login. Laporan diterima resmi oleh Komisi Aspirasi DPM FDIK dan dapat dipantau melalui kode tiket.
-                    </p>
-                </div>
-                <div class="flex flex-wrap items-center gap-3 shrink-0">
-                    <a href="{{ route('reports.create') }}" class="inline-flex items-center justify-center gap-2 h-[44px] px-6 rounded-[8px] bg-white text-[#0f172a] text-[15px] font-medium hover:bg-[#f1f5f9] transition">
-                        Kirim aspirasi &rarr;
-                    </a>
-                    <a href="{{ route('tracking.index') }}" class="inline-flex items-center justify-center h-[44px] px-5 rounded-[8px] border border-white/20 text-white text-[15px] font-medium hover:bg-white/10 transition">
-                        Lacak tiket
-                    </a>
-                </div>
-            </div>
-
-            {{-- Band 2: Structured Directory --}}
+    {{-- Clean Minimal SaaS Footer --}}
+    <footer class="no-print bg-[#0f172a] text-[#e6edf3]">
+        <div class="max-w-[1180px] mx-auto px-5 sm:px-8">
             <div class="py-12 grid grid-cols-1 md:grid-cols-12 gap-10 border-b border-white/10">
                 <div class="md:col-span-5">
                     <x-brand-logo :inverted="true" />
-                    <p class="mt-4 text-[14px] text-[#94a3b8] leading-relaxed max-w-sm">
-                        Sistem Integrasi Layanan Interaksi dan Respon Aspirasi — Dewan Perwakilan Mahasiswa Fakultas Dakwah dan Ilmu Komunikasi.
+                    <p class="mt-3.5 text-[14px] text-[#94a3b8] leading-relaxed max-w-xs">
+                        Portal aspirasi dan pengaduan resmi DPM Fakultas Dakwah dan Ilmu Komunikasi.
                     </p>
                 </div>
 
                 <div class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8 text-[14px]">
                     <div>
-                        <p class="font-medium text-white mb-3">Layanan</p>
+                        <h3 class="font-medium text-white mb-3 text-[13.5px]">Layanan</h3>
                         <ul class="space-y-2.5 text-[#94a3b8]">
-                            <li><a href="{{ route('reports.create') }}" class="hover:text-white transition">Kirim aspirasi</a></li>
-                            <li><a href="{{ route('tracking.index') }}" class="hover:text-white transition">Lacak kode tiket</a></li>
-                            <li><a href="{{ route('public.feed') }}" class="hover:text-white transition">Aspirasi publik</a></li>
+                            <li><a href="{{ route('reports.create') }}" class="hover:text-white transition">Kirim Aspirasi</a></li>
+                            <li><a href="{{ route('tracking.index') }}" class="hover:text-white transition">Lacak Tiket</a></li>
+                            <li><a href="{{ route('public.feed') }}" class="hover:text-white transition">Aspirasi Publik</a></li>
                         </ul>
                     </div>
 
                     <div>
-                        <p class="font-medium text-white mb-3">Privasi</p>
+                        <h3 class="font-medium text-white mb-3 text-[13.5px]">Privasi</h3>
                         <ul class="space-y-2.5 text-[#94a3b8]">
-                            <li><a href="{{ route('public.feed') }}" class="hover:text-white transition">Laporan publik</a></li>
-                            <li><a href="{{ route('reports.create') }}" class="hover:text-white transition">Mode anonim</a></li>
-                            <li><a href="{{ route('reports.create') }}" class="hover:text-white transition">Mode rahasia</a></li>
+                            <li><a href="{{ route('public.feed') }}" class="hover:text-white transition">Mode Publik</a></li>
+                            <li><a href="{{ route('reports.create') }}" class="hover:text-white transition">Mode Anonim</a></li>
+                            <li><a href="{{ route('reports.create') }}" class="hover:text-white transition">Mode Rahasia</a></li>
                         </ul>
                     </div>
 
                     <div>
-                        <p class="font-medium text-white mb-3">Pengurus DPM</p>
+                        <h3 class="font-medium text-white mb-3 text-[13.5px]">Pengurus</h3>
                         <ul class="space-y-2.5 text-[#94a3b8]">
                             @auth
-                                <li><a href="{{ route('admin.dashboard') }}" class="hover:text-white transition">Dashboard admin</a></li>
-                                <li><a href="{{ route('admin.reports.index') }}" class="hover:text-white transition">Kelola laporan</a></li>
+                                <li><a href="{{ route('admin.dashboard') }}" class="hover:text-white transition">Dashboard Admin</a></li>
+                                <li><a href="{{ route('admin.reports.index') }}" class="hover:text-white transition">Kelola Laporan</a></li>
                             @else
-                                <li><a href="{{ route('admin.login') }}" class="hover:text-white transition">Masuk portal admin</a></li>
+                                <li><a href="{{ route('admin.login') }}" class="hover:text-white transition">Portal Admin</a></li>
                             @endauth
                         </ul>
                     </div>
                 </div>
             </div>
 
-            {{-- Legal Row --}}
-            <div class="py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[13px] text-[#94a3b8]">
-                <span>&copy; {{ date('Y') }} Silira &middot; DPM Fakultas Dakwah dan Ilmu Komunikasi</span>
-                <span>Layanan Aspirasi &amp; Pengaduan Terpadu</span>
+            <div class="py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[13px] text-[#94a3b8]">
+                <span>&copy; {{ date('Y') }} Silira &middot; DPM FDIK</span>
+                <span>Sistem Layanan Aspirasi Terpadu</span>
             </div>
         </div>
     </footer>

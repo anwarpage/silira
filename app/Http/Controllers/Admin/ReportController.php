@@ -6,13 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Report;
 use App\Models\ReportResponse;
+use App\Services\ReportAnalyticsService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Throwable;
 
 class ReportController extends Controller
 {
@@ -27,7 +30,19 @@ class ReportController extends Controller
 
         $categories = Category::orderBy('name')->get();
 
-        return view('admin.reports.index', compact('reports', 'categories'));
+        $availableYears = Report::query()
+            ->selectRaw('DISTINCT YEAR(created_at) as year')
+            ->whereNotNull('created_at')
+            ->orderByDesc('year')
+            ->pluck('year')
+            ->map(fn ($year) => (int) $year)
+            ->values();
+
+        if ($availableYears->isEmpty()) {
+            $availableYears = collect([(int) now()->format('Y')]);
+        }
+
+        return view('admin.reports.index', compact('reports', 'categories', 'availableYears'));
     }
 
     public function show(Report $report): View
@@ -57,33 +72,36 @@ class ReportController extends Controller
 
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
-            $attachmentPath = $file->store('attachments/responses', 'public');
+            $attachmentPath = $file->store('attachments/responses', 'local');
             $attachmentName = $file->getClientOriginalName();
         }
 
-        if (! $isInternal && $newStatus !== $oldStatus) {
-            $updates = ['status' => $newStatus];
-            if ($newStatus === 'diverifikasi' && ! $report->verified_at) {
-                $updates['verified_at'] = now();
-            }
-            if (in_array($newStatus, ['selesai', 'ditolak'], true)) {
-                $updates['resolved_at'] = now();
-            }
-            $report->update($updates);
-        }
+        try {
+            DB::transaction(function () use ($request, $report, $validated, $isInternal, $oldStatus, $newStatus, $attachmentPath, $attachmentName): void {
+                if (! $isInternal && $newStatus !== $oldStatus) {
+                    $report->update($this->statusLifecycleUpdates($report, $newStatus));
+                }
 
-        ReportResponse::create([
-            'report_id' => $report->id,
-            'user_id' => $request->user()->id,
-            'sender_type' => 'admin',
-            'sender_name' => $request->user()->name,
-            'message' => $validated['message'],
-            'attachment_path' => $attachmentPath,
-            'attachment_name' => $attachmentName,
-            'status_from' => (! $isInternal && $newStatus !== $oldStatus) ? $oldStatus : null,
-            'status_to' => (! $isInternal && $newStatus !== $oldStatus) ? $newStatus : null,
-            'is_internal' => $isInternal,
-        ]);
+                ReportResponse::create([
+                    'report_id' => $report->id,
+                    'user_id' => $request->user()->id,
+                    'sender_type' => 'admin',
+                    'sender_name' => $request->user()->name,
+                    'message' => $validated['message'],
+                    'attachment_path' => $attachmentPath,
+                    'attachment_name' => $attachmentName,
+                    'status_from' => (! $isInternal && $newStatus !== $oldStatus) ? $oldStatus : null,
+                    'status_to' => (! $isInternal && $newStatus !== $oldStatus) ? $newStatus : null,
+                    'is_internal' => $isInternal,
+                ]);
+            });
+        } catch (Throwable $e) {
+            if ($attachmentPath) {
+                Storage::disk('local')->delete($attachmentPath);
+            }
+
+            throw $e;
+        }
 
         return redirect()
             ->route('admin.reports.show', $report)
@@ -107,14 +125,41 @@ class ReportController extends Controller
             'nama_pelapor' => ['required', 'string', 'max:120'],
             'nim_nip' => ['required', 'string', 'max:60'],
             'jurusan_instansi' => ['nullable', 'string', 'max:120'],
-            'no_wa' => ['required', 'string', 'max:25'],
+            'no_wa' => ['required', 'string', 'max:25', 'regex:/^[0-9+\-\s()]{8,25}$/'],
             'judul_laporan' => ['required', 'string', 'max:255'],
             'isi_laporan' => ['required', 'string', 'max:3000'],
             'tanggal_kejadian' => ['nullable', 'date'],
             'lokasi_kejadian' => ['nullable', 'string', 'max:180'],
+        ], [
+            'no_wa.regex' => 'Format nomor WhatsApp tidak valid (gunakan angka 8–25 karakter).',
         ]);
 
-        $report->update($validated);
+        $oldStatus = $report->status;
+        $newStatus = $validated['status'];
+
+        DB::transaction(function () use ($request, $report, $validated, $oldStatus, $newStatus): void {
+            $payload = $validated;
+
+            if ($newStatus !== $oldStatus) {
+                $payload = array_merge($payload, $this->statusLifecycleUpdates($report, $newStatus));
+            }
+
+            $report->update($payload);
+
+            if ($newStatus !== $oldStatus) {
+                $statusLabel = Report::STATUSES[$newStatus] ?? $newStatus;
+                ReportResponse::create([
+                    'report_id' => $report->id,
+                    'user_id' => $request->user()->id,
+                    'sender_type' => 'admin',
+                    'sender_name' => $request->user()->name,
+                    'message' => "Status laporan diperbarui menjadi {$statusLabel} melalui pembaruan data laporan.",
+                    'status_from' => $oldStatus,
+                    'status_to' => $newStatus,
+                    'is_internal' => false,
+                ]);
+            }
+        });
 
         return redirect()
             ->route('admin.reports.show', $report)
@@ -123,58 +168,71 @@ class ReportController extends Controller
 
     public function destroy(Report $report): RedirectResponse
     {
-        if ($report->attachment_path) {
-            Storage::disk('public')->delete($report->attachment_path);
-        }
+        $report->load('responses');
 
-        foreach ($report->responses as $response) {
-            if ($response->attachment_path) {
-                Storage::disk('public')->delete($response->attachment_path);
-            }
-        }
+        $paths = collect([$report->attachment_path])
+            ->merge($report->responses->pluck('attachment_path'))
+            ->filter()
+            ->unique()
+            ->values();
 
         $ticketCode = $report->ticket_code;
-        $report->delete();
+
+        DB::transaction(function () use ($report, $paths): void {
+            $report->delete();
+
+            DB::afterCommit(function () use ($paths): void {
+                foreach ($paths as $path) {
+                    Storage::disk('local')->delete($path);
+                    Storage::disk('public')->delete($path);
+                }
+            });
+        });
 
         return redirect()
             ->route('admin.reports.index')
             ->with('success', "Laporan {$ticketCode} berhasil dihapus.");
     }
 
-    public function export(Request $request): StreamedResponse
+    public function export(Request $request, ReportAnalyticsService $analytics): StreamedResponse
     {
-        $reports = $this->filteredQuery($request)
+        $query = $this->filteredQuery($request)
             ->with('category')
-            ->latest()
-            ->get();
+            ->withCount('responses')
+            ->latest();
 
         $filename = 'laporan-silira-'.now()->format('Ymd-His').'.csv';
 
-        return response()->streamDownload(function () use ($reports) {
+        return response()->streamDownload(function () use ($query, $analytics): void {
             $handle = fopen('php://output', 'w');
             // UTF-8 BOM for clean Excel display
             fwrite($handle, "\xEF\xBB\xBF");
 
             fputcsv($handle, [
                 'Kode Tiket',
+                'Waktu Masuk',
                 'Jenis Laporan',
-                'Kategori',
+                'Kategori Bidang',
                 'Privasi',
                 'Status',
                 'Nama Pelapor',
                 'NIM/NIP',
                 'Jurusan/Instansi',
-                'No WA',
+                'No WhatsApp',
                 'Judul Laporan',
                 'Isi Laporan',
                 'Tanggal Kejadian',
                 'Lokasi Kejadian',
-                'Waktu Masuk',
+                'Lampiran',
+                'Waktu Verifikasi',
+                'Waktu Selesai',
+                'Jumlah Tanggapan',
             ]);
 
-            foreach ($reports as $report) {
-                fputcsv($handle, [
+            foreach ($query->cursor() as $report) {
+                fputcsv($handle, array_map([$analytics, 'sanitizeSpreadsheetCell'], [
                     $report->ticket_code,
+                    $report->created_at?->format('Y-m-d H:i:s') ?? '-',
                     $report->jenis_laporan,
                     $report->category?->name ?? '-',
                     $report->privacy_label,
@@ -187,14 +245,34 @@ class ReportController extends Controller
                     $report->isi_laporan,
                     $report->tanggal_kejadian?->format('Y-m-d') ?? '-',
                     $report->lokasi_kejadian ?? '-',
-                    $report->created_at?->format('d-m-Y H:i:s'),
-                ]);
+                    $report->attachment_name ?? '-',
+                    $report->verified_at?->format('Y-m-d H:i:s') ?? '-',
+                    $report->resolved_at?->format('Y-m-d H:i:s') ?? '-',
+                    (string) $report->responses_count,
+                ]));
             }
 
             fclose($handle);
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
+    }
+
+    private function statusLifecycleUpdates(Report $report, string $newStatus): array
+    {
+        $updates = ['status' => $newStatus];
+
+        if (in_array($newStatus, ['diverifikasi', 'diproses', 'selesai'], true) && ! $report->verified_at) {
+            $updates['verified_at'] = now();
+        }
+
+        if (in_array($newStatus, ['selesai', 'ditolak'], true)) {
+            $updates['resolved_at'] = now();
+        } else {
+            $updates['resolved_at'] = null;
+        }
+
+        return $updates;
     }
 
     private function filteredQuery(Request $request): Builder

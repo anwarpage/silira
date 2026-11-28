@@ -5,27 +5,37 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
     public function index(): View
     {
+        $statusCounts = Report::query()
+            ->select('status', DB::raw('COUNT(*) as aggregate'))
+            ->groupBy('status')
+            ->pluck('aggregate', 'status');
+
         $stats = [
-            'total' => Report::count(),
-            'menunggu' => Report::whereIn('status', ['menunggu', 'diverifikasi'])->count(),
-            'diproses' => Report::where('status', 'diproses')->count(),
-            'selesai' => Report::where('status', 'selesai')->count(),
+            'total' => (int) $statusCounts->sum(),
+            'menunggu' => (int) (($statusCounts['menunggu'] ?? 0) + ($statusCounts['diverifikasi'] ?? 0)),
+            'diproses' => (int) ($statusCounts['diproses'] ?? 0),
+            'selesai' => (int) ($statusCounts['selesai'] ?? 0),
         ];
 
         $categories = Category::where('is_active', true)->orderBy('name')->get();
 
-        $publicReports = Report::with(['category', 'publicResponses'])
+        $publicReports = Report::with('category')
             ->withCount(['publicResponses'])
             ->visiblePublicly()
             ->latest()
             ->take(5)
             ->get();
+
+        if ($featured = $publicReports->first()) {
+            $featured->load('publicResponses');
+        }
 
         return view('public.home', compact('stats', 'categories', 'publicReports'));
     }
@@ -60,5 +70,17 @@ class HomeController extends Controller
         $categories = Category::where('is_active', true)->orderBy('name')->get();
 
         return view('public.feed', compact('reports', 'categories'));
+    }
+
+    public function showPublicReport(string $ticketCode): View
+    {
+        $code = strtoupper(trim($ticketCode));
+
+        $report = Report::with(['category', 'publicResponses'])
+            ->visiblePublicly()
+            ->where('ticket_code', $code)
+            ->firstOrFail();
+
+        return view('public.aspiration-show', compact('report'));
     }
 }

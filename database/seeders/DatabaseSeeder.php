@@ -14,26 +14,6 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $superAdmin = User::updateOrCreate(
-            ['email' => 'admin@silira.ac.id'],
-            [
-                'name' => 'Ketua Komisi Aspirasi DPM',
-                'role' => 'superadmin',
-                'jabatan' => 'Komisi Aspirasi & Advokasi DPM FDIK',
-                'password' => Hash::make('password123'),
-            ]
-        );
-
-        $staffAdmin = User::updateOrCreate(
-            ['email' => 'sekretariat@silira.ac.id'],
-            [
-                'name' => 'Sekretariat DPM FDIK',
-                'role' => 'admin_dpm',
-                'jabatan' => 'Sekretariat Umum DPM FDIK',
-                'password' => Hash::make('password123'),
-            ]
-        );
-
         $categoryList = [
             ['name' => 'Akademik & Perkuliahan', 'description' => 'Jadwal kuliah, KRS, dosen, kurikulum, dan bimbingan skripsi.'],
             ['name' => 'Fasilitas & Sarana Prasarana', 'description' => 'Ruang kelas, laboratorium komunikasi, proyektor, AC, Wi-Fi, dan musala.'],
@@ -46,7 +26,7 @@ class DatabaseSeeder extends Seeder
 
         $categories = [];
         foreach ($categoryList as $item) {
-            $cat = Category::updateOrCreate(
+            $cat = Category::firstOrCreate(
                 ['slug' => Str::slug($item['name'])],
                 [
                     'name' => $item['name'],
@@ -57,12 +37,52 @@ class DatabaseSeeder extends Seeder
             $categories[$item['name']] = $cat;
         }
 
+        if (app()->isProduction()) {
+            $initialPassword = env('ADMIN_INITIAL_PASSWORD');
+            if (User::count() === 0 && is_string($initialPassword) && $initialPassword !== '') {
+                User::firstOrCreate(
+                    ['email' => env('ADMIN_INITIAL_EMAIL', 'admin@silira.ac.id')],
+                    [
+                        'name' => 'Ketua Komisi Aspirasi DPM',
+                        'role' => 'superadmin',
+                        'jabatan' => 'Komisi Aspirasi & Advokasi DPM FDIK',
+                        'password' => Hash::make($initialPassword),
+                    ]
+                );
+            }
+
+            return;
+        }
+
+        $superAdmin = User::firstOrCreate(
+            ['email' => 'admin@silira.ac.id'],
+            [
+                'name' => 'Ketua Komisi Aspirasi DPM',
+                'role' => 'superadmin',
+                'jabatan' => 'Komisi Aspirasi & Advokasi DPM FDIK',
+                'password' => Hash::make('password123'),
+            ]
+        );
+
+        $staffAdmin = User::firstOrCreate(
+            ['email' => 'sekretariat@silira.ac.id'],
+            [
+                'name' => 'Sekretariat DPM FDIK',
+                'role' => 'admin_dpm',
+                'jabatan' => 'Sekretariat Umum DPM FDIK',
+                'password' => Hash::make('password123'),
+            ]
+        );
+
         if (Report::count() > 0) {
             return;
         }
 
+        $demoPinHash = Hash::make('FDIK26');
+
         $r1 = Report::create([
             'ticket_code' => 'SLR-2026-FDIK01',
+            'access_pin' => $demoPinHash,
             'jenis_laporan' => 'Pengaduan',
             'category_id' => $categories['Fasilitas & Sarana Prasarana']->id,
             'privacy' => 'public',
@@ -133,6 +153,7 @@ class DatabaseSeeder extends Seeder
 
         $r2 = Report::create([
             'ticket_code' => 'SLR-2026-FDIK02',
+            'access_pin' => $demoPinHash,
             'jenis_laporan' => 'Aspirasi',
             'category_id' => $categories['Akademik & Perkuliahan']->id,
             'privacy' => 'anonymous',
@@ -181,6 +202,7 @@ class DatabaseSeeder extends Seeder
 
         $r3 = Report::create([
             'ticket_code' => 'SLR-2026-FDIK03',
+            'access_pin' => $demoPinHash,
             'jenis_laporan' => 'Permintaan Informasi',
             'category_id' => $categories['Keuangan & UKT']->id,
             'privacy' => 'public',
@@ -218,6 +240,7 @@ class DatabaseSeeder extends Seeder
 
         $r4 = Report::create([
             'ticket_code' => 'SLR-2026-FDIK04',
+            'access_pin' => $demoPinHash,
             'jenis_laporan' => 'Pengaduan',
             'category_id' => $categories['Etika & Keamanan Kampus']->id,
             'privacy' => 'confidential',

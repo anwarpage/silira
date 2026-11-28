@@ -73,5 +73,5 @@ php artisan test
 
 - [ ] Perubahan berjalan bersih di lokal (`php artisan serve` + `npm run build`).
 - [ ] Seluruh test lulus (`php artisan test`).
-- [ ] Tidak menyertakan file sensitif (`.env`, `database/database.sqlite`, atau berkas upload pengguna).
+- [ ] Tidak menyertakan file sensitif (`.env` atau berkas upload pengguna).
 - [ ] Deskripsi PR menjelaskan *apa* yang diubah dan *mengapa* perubahan tersebut diperlukan.

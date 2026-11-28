@@ -13,7 +13,7 @@
     $inputId = $id ?? 'dropdown_' . $name . '_' . uniqid();
     $currentValue = old($name, $selected);
     $currentOption = collect($options)->first(fn ($opt) => (string) $opt['value'] === (string) $currentValue);
-    $heightClass = $size === 'sm' ? 'h-[42px] px-3 text-[14px]' : 'h-[48px] px-3.5 text-[15px]';
+    $heightClass = $size === 'sm' ? 'h-[40px] px-3 text-[14px]' : 'h-[44px] px-3.5 text-[14.5px]';
 @endphp
 
 <div class="relative w-full" data-dropdown data-required="{{ $required ? '1' : '0' }}">
@@ -24,7 +24,7 @@
         data-dropdown-trigger
         aria-haspopup="listbox"
         aria-expanded="false"
-        class="w-full {{ $heightClass }} rounded-[8px] border border-[#0f172a]/20 bg-white text-left flex items-center justify-between gap-2.5 hover:border-[#0f172a]/40 focus:outline-none focus:border-[#1e3a8a] focus:ring-[3px] focus:ring-[#1e3a8a]/14 transition cursor-pointer"
+        class="w-full {{ $heightClass }} rounded-[9px] border border-[#0f172a]/18 bg-white text-left flex items-center justify-between gap-2.5 hover:border-[#0f172a]/35 focus:outline-none focus:border-[#1e3a8a] focus:ring-[3px] focus:ring-[#1e3a8a]/14 transition cursor-pointer"
     >
         <span class="flex items-center gap-2.5 min-w-0 truncate">
             @if (!empty($currentOption['dot']))
@@ -45,15 +45,15 @@
     <div
         data-dropdown-panel
         role="listbox"
-        class="hidden absolute left-0 right-0 z-50 mt-1.5 rounded-[10px] border border-[#0f172a]/14 bg-white shadow-xl shadow-[#0f172a]/8 overflow-hidden"
+        class="hidden absolute left-0 right-0 z-50 mt-1.5 rounded-[10px] border border-[#0f172a]/12 bg-white shadow-xl shadow-[#0f172a]/8 overflow-hidden"
     >
         @if ($searchable)
-            <div class="p-2 border-b border-[#0f172a]/8 bg-[#f5f7fa]">
+            <div class="p-2 border-b border-[#0f172a]/8 bg-[#f8fafc]">
                 <input
                     type="text"
                     data-dropdown-search
                     placeholder="Cari pilihan..."
-                    class="w-full h-9 px-3 rounded-[6px] border border-[#0f172a]/18 bg-white text-[14px] text-[#0f172a] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#1e3a8a]"
+                    class="w-full h-9 px-3 rounded-[7px] border border-[#0f172a]/15 bg-white text-[14px] text-[#0f172a] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#1e3a8a]"
                 >
             </div>
         @endif
@@ -72,7 +72,7 @@
                     data-label="{{ $option['label'] }}"
                     data-dot="{{ $option['dot'] ?? '' }}"
                     data-search-text="{{ strtolower($option['label'] . ' ' . ($option['description'] ?? '')) }}"
-                    class="w-full text-left px-3 py-2.5 rounded-[7px] flex items-start justify-between gap-3 transition cursor-pointer {{ $isSelected ? 'bg-[#eff4ff] text-[#0f172a]' : 'text-[#0f172a] hover:bg-[#f5f7fa]' }}"
+                    class="w-full text-left px-3 py-2 rounded-[7px] flex items-start justify-between gap-3 transition cursor-pointer {{ $isSelected ? 'bg-[#eff6ff] text-[#0f172a]' : 'text-[#0f172a] hover:bg-[#f8fafc]' }}"
                 >
                     <span class="flex items-start gap-2.5 min-w-0">
                         @if (!empty($option['dot']))
@@ -93,4 +93,6 @@
             @endforeach
         </div>
     </div>
+
+    <p data-dropdown-error class="hidden mt-1.5 text-[13px] text-[#991b1b]"></p>
 </div>
